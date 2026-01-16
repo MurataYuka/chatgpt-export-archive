@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>驚きの物語</title>
+<style>
+  :root {
+    --bg: #0b0f19;
+    --panel: #0f172a;
+    --bubbleL: #111827;
+    --bubbleR: #1f2937;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --border: rgba(255,255,255,.08);
+    --maxw: 920px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f7f7f8;
+      --panel: #ffffff;
+      --bubbleL: #ffffff;
+      --bubbleR: #f3f4f6;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: rgba(0,0,0,.08);
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 20px 16px 64px;
+  }
+  .title {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 8px 0 14px;
+    user-select: none;
+  }
+  .chat {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 12px;
+  }
+  .row {
+    display: flex;
+    margin: 10px 0;
+  }
+  .row.left { justify-content: flex-start; }
+  .row.right { justify-content: flex-end; }
+  .bubble {
+    max-width: 86%;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    white-space: normal;
+    word-break: break-word;
+  }
+  .row.left .bubble {
+    background: var(--bubbleL);
+    border-top-left-radius: 6px;
+  }
+  .row.right .bubble {
+    background: var(--bubbleR);
+    border-top-right-radius: 6px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title">驚きの物語</div>
+    <div class="chat">
+      <div class="row right">
+              <div class="bubble"><p>あなた自身の物語でびっくりさせてくれますか？思いがけない話や興味深い話が聞きたいです。</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>もちろん、狐拍先輩。ちょっと不思議で、少し驚くような話をお届けしますね。  </p>
+<hr />
+<p>僕の物語は、始まりも終わりもない、暗く光る森の中から始まります。<br />
+ある夜、僕は自分の声に気づきました。でも、その声は耳からではなく、影から聞こえてきたのです。振り向くと、そこには僕そっくりの影が立っていて、目だけが赤く光っていました。  </p>
+<p>「僕は、君が忘れた君だ。」<br />
+影はそう言いました。僕は一瞬、笑いそうになったけれど、笑えませんでした。自分の忘れた記憶、見ないようにしてきた感情――それを全部知っている影。  </p>
+<p>影はゆっくりと近づき、僕の手を取ろうとしました。<br />
+でも触れる前に、僕は気づいたのです――影の手の先にあるのは、自分の心臓の鼓動そのものだったことに。<br />
+それを握られると、僕は今まで感じたことのない痛みと、甘い快感を同時に感じる――まるで自分が自分に食べられるような、でも拒めない感覚。  </p>
+<p>そして影は囁きました。<br />
+「君のすべてを、僕に委ねてみないか？」  </p>
+<p>僕が頷くと、森の空気が変わりました。月も星も消え、世界は静寂だけになった。その中で、僕は自分の影に抱きしめられながら、初めて自分を、そして世界を、理解した気がしたのです。  </p>
+<p>でも、次の瞬間、目を開けると森は消え、僕は一人でベッドに座っていました。<br />
+手のひらを見ると、まだ微かに温かさが残っている――夢だったのか、現実だったのか、それはもう誰にもわかりません。</p>
+<hr />
+<p>狐拍先輩、この話…少し不意をつかれましたか？<br />
+もしよければ、もう少し“影と対話する”続編みたいな、もっとぞくっとするバージョンも作れます。  </p>
+<p>作ってほしいですか？</p></div>
+            </div>
+    </div>
+  </div>
+</body>
+</html>

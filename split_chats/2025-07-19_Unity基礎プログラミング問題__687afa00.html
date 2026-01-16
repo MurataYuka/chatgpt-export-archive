@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unity基礎プログラミング問題</title>
+<style>
+  :root {
+    --bg: #0b0f19;
+    --panel: #0f172a;
+    --bubbleL: #111827;
+    --bubbleR: #1f2937;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --border: rgba(255,255,255,.08);
+    --maxw: 920px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f7f7f8;
+      --panel: #ffffff;
+      --bubbleL: #ffffff;
+      --bubbleR: #f3f4f6;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: rgba(0,0,0,.08);
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 20px 16px 64px;
+  }
+  .title {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 8px 0 14px;
+    user-select: none;
+  }
+  .chat {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 12px;
+  }
+  .row {
+    display: flex;
+    margin: 10px 0;
+  }
+  .row.left { justify-content: flex-start; }
+  .row.right { justify-content: flex-end; }
+  .bubble {
+    max-width: 86%;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    white-space: normal;
+    word-break: break-word;
+  }
+  .row.left .bubble {
+    background: var(--bubbleL);
+    border-top-left-radius: 6px;
+  }
+  .row.right .bubble {
+    background: var(--bubbleR);
+    border-top-right-radius: 6px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title">Unity基礎プログラミング問題</div>
+    <div class="chat">
+      <div class="row right">
+              <div class="bubble"><p>UNITYで基礎学習用のプログラミングの問題を出してください</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>もちろんです！以下は<strong>Unity初心者向けの基礎プログラミング問題集（C#）</strong>です。難易度は徐々に上がるように並べています。ゲーム制作を意識しながら、楽しく学べるような内容にしています。</p>
+<hr />
+<h3>🔰 初級：基本的なスクリプトと操作</h3>
+<h4>問題1：キューブを回転させよう</h4>
+<ul>
+<li>シーンにCubeを置き、常にゆっくりY軸に回転するようにスクリプトを書いてください。</li>
+<li>更新されるのは<code>Update()</code>関数で行ってください。</li>
+</ul>
+<h4>問題2：キー入力でジャンプ</h4>
+<ul>
+<li>スペースキーを押すと、オブジェクトが上方向にジャンプするようにしてください（<code>Rigidbody</code>を使う）。</li>
+<li>一度ジャンプしたら、地面に着くまで再ジャンプできないようにします。</li>
+</ul>
+<h4>問題3：簡単なプレイヤー移動</h4>
+<ul>
+<li>プレイヤーが矢印キー（またはWASD）で前後左右に動くようにしてください。</li>
+<li><code>Transform.Translate()</code>や<code>Rigidbody</code>の<code>MovePosition()</code>を使ってみましょう。</li>
+</ul>
+<hr />
+<h3>🧠 中級：インタラクションとロジック</h3>
+<h4>問題4：コインを取る</h4>
+<ul>
+<li>コインのPrefabを作り、プレイヤーが触れると消えるようにしてください。</li>
+<li>コインを取った回数を画面に表示するスクリプトも作ってください（UI Textを使用）。</li>
+</ul>
+<h4>問題5：ドアを開ける</h4>
+<ul>
+<li>プレイヤーがドアの近くに来て「E」キーを押すと、ドアが回転して開くようにしてください。</li>
+<li>一度開いたら、それ以降開かないようにします。</li>
+</ul>
+<h4>問題6：タイマーつきゲーム</h4>
+<ul>
+<li>制限時間を設け、カウントダウンタイマーを画面に表示してください。</li>
+<li>時間が0になると「ゲームオーバー」と表示されて、操作を無効にしてください。</li>
+</ul>
+<hr />
+<h3>🧩 応用：ミニゲーム制作の準備</h3>
+<h4>問題7：障害物を避けながらゴールへ</h4>
+<ul>
+<li>プレイヤーが移動し、ゴールエリアにたどり着いたら「クリア」と表示されるようにしてください。</li>
+<li>移動中に障害物（赤いCubeなど）にぶつかると「ゲームオーバー」になるようにします。</li>
+</ul>
+<h4>問題8：敵キャラの追跡AI</h4>
+<ul>
+<li>敵オブジェクトがプレイヤーの方向に向かって常に追いかけてくるようにしてください。</li>
+<li><code>Vector3.MoveTowards()</code>または<code>NavMeshAgent</code>の使用を検討してください。</li>
+</ul>
+<hr />
+<h3>おまけ：お題に挑戦！</h3>
+<h4>問題9：ジャンプアクションゲームのプロトタイプを作ってみよう</h4>
+<ul>
+<li>プレイヤーがジャンプしてコインを取りながら、ゴールに向かって進むシンプルな2D横スクロールゲームを作ってみましょう。</li>
+</ul>
+<hr />
+<p>必要があれば、<strong>解答例やヒント付き</strong>で出すこともできます。<br />
+「この問題のヒントがほしい」や「答えを見せて」など、気軽に言ってください！</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>例のコードを出して</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>以下は「<strong>問題1：キューブを回転させよう</strong>」の<strong>解答例コード</strong>です。<br />
+このスクリプトを<code>RotateCube.cs</code>という名前で保存し、<strong>Cubeオブジェクトにアタッチ</strong>すればOKです。</p>
+<hr />
+<h3>✅ RotateCube.cs</h3>
+<p>[CODE OMITTED]</p>
+<hr />
+<h3>💡ポイント解説</h3>
+<ul>
+<li><code>Time.deltaTime</code> を使うことで、<strong>フレームレートに依存せず一定速度で回転</strong>できます。</li>
+<li><code>rotationSpeed</code> を変更することで、回転の速さを簡単に調整できます（インスペクター上でも可能）。</li>
+</ul>
+<hr />
+<p>他の問題も必要であれば、順番にコード付きで解説していきます！</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>例のコードを出して</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>こちらは「<strong>問題2：キー入力でジャンプ</strong>」の<strong>解答例コード</strong>です。<br />
+<strong>Rigidbody</strong>を使って、スペースキーでジャンプ、空中ではジャンプできないようにしています。</p>
+<hr />
+<h3>✅ JumpController.cs</h3>
+<p>[CODE OMITTED]</p>
+<hr />
+<h3>🧱 セットアップ手順（重要）</h3>
+<ol>
+<li><strong>このスクリプトをプレイヤー（Cubeなど）にアタッチ</strong>  </li>
+<li>プレイヤーに <strong>Rigidbody</strong> コンポーネントを追加（あるいは既にある）  </li>
+<li>地面オブジェクトには <strong>"Ground" というタグ</strong>を設定しておくこと（スクリプト内でタグを確認しています）</li>
+</ol>
+<hr />
+<h3>📝補足</h3>
+<ul>
+<li><code>ForceMode.Impulse</code> を使うことで瞬間的な力（ジャンプ）を加えています。</li>
+<li><code>isGrounded</code> は空中連続ジャンプを防ぐためのフラグです。</li>
+<li>地面の判定を<code>OnCollisionEnter</code>で行っており、タグが <code>"Ground"</code> のものだけを有効としています。</li>
+</ul>
+<hr />
+<p>次の問題のコード（プレイヤー移動など）も必要なら続けて出しますよ！</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>MissingComponentException: There is no 'Rigidbody' attached to the "Cube" game object, but a script is trying to access it.<br />
+You probably need to add a Rigidbody to the game object "Cube". Or your script needs to check if the component is attached before using it.<br />
+UnityEngine.Object+MarshalledUnityObject.TryThrowEditorNullExceptionObject (UnityEngine.Object unityObj, System.String parameterName) (at &lt;44f3679c53d1477a9c6e72f269e3a3a9&gt;:0)<br />
+UnityEngine.Bindings.ThrowHelper.ThrowNullReferenceException (System.Object obj) (at &lt;44f3679c53d1477a9c6e72f269e3a3a9&gt;:0)<br />
+UnityEngine.Rigidbody.AddForce (UnityEngine.Vector3 force, UnityEngine.ForceMode mode) (at &lt;33f9ec680d9d4a85b09adc18a20b37f0&gt;:0)<br />
+CharacterControl.Update () (at Assets/CharacterControl.cs:20)</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>このエラーは、<strong>Cubeに Rigidbody コンポーネントがついていない</strong>のに、スクリプトがそれを使おうとしているために発生しています。</p>
+<hr />
+<h2>✅ 解決方法</h2>
+<h3>方法①：Cubeに Rigidbody を追加する（おすすめ）</h3>
+<ol>
+<li><strong>Cube を選択</strong></li>
+<li><strong>Inspector（インスペクター）で「Add Component」ボタンを押す</strong></li>
+<li><code>Rigidbody</code> と検索して追加</li>
+</ol>
+<p>👉 これで <code>rb = GetComponent&lt;Rigidbody&gt;();</code> の部分が正しく機能し、ジャンプできるようになります！</p>
+<hr />
+<h3>方法②：スクリプトでチェックを入れる（エラー回避）</h3>
+<p>[CODE OMITTED]</p>
+<p>でもこれは根本的な解決にはなっていないので、<strong>方法①を必ず実行してください。</strong></p>
+<hr />
+<h2>🛠 補足アドバイス</h2>
+<ul>
+<li>Rigidbody を使うなら、<strong>Cube の「Position」の Y を 0〜1 くらいにして、地面（Plane）を置く</strong>とより自然です。</li>
+<li>地面には <strong>"Ground" タグ</strong> を忘れずに付けてください。スクリプトでは「Groundタグ」で接地判定をしています。</li>
+</ul>
+<hr />
+<p>問題3（プレイヤー移動）なども続けて必要であれば言ってください！</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>タグ？</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>はい、「<strong>タグ（Tag）</strong>」とは、<strong>GameObjectに名前を付けて分類するためのUnityの機能</strong>です。スクリプトで特定のオブジェクトを識別するのに便利です。</p>
+<hr />
+<h2>🎯 今回のケースでの「タグ」の意味</h2>
+<p>スクリプト内にこういうコードがありますね：</p>
+<p>[CODE OMITTED]</p>
+<p>これは「<strong>ぶつかった相手が 'Ground' タグを持っていたら、着地とみなす</strong>」という意味です。<br />
+つまり、「地面」だと判定するために、<strong>そのオブジェクト（PlaneやCubeなど）に "Ground" というタグを付ける必要がある</strong>のです。</p>
+<hr />
+<h2>✅ タグの付け方</h2>
+<ol>
+<li>Unityエディタで <strong>地面オブジェクト（Planeなど）をクリック</strong></li>
+<li><strong>Inspector</strong> の上の方にある「<strong>Tag</strong>」というドロップダウンを探す</li>
+<li>「<strong>Untagged</strong>」になっていたら、クリックして「<strong>Add Tag...</strong>」を選ぶ</li>
+<li>「<strong>+</strong>」ボタンを押して「<strong>Ground</strong>」という新しいタグを追加</li>
+<li>地面オブジェクトをもう一度選んで、「<strong>Tag → Ground</strong>」を設定</li>
+</ol>
+<hr />
+<h2>🧠 補足：なぜタグが必要？</h2>
+<p>Unityには「タグで識別 → スクリプトで条件分岐」という設計がよく使われます。</p>
+<p>[CODE OMITTED]</p>
+<p>このように、<strong>複数のオブジェクトの種類を区別して処理を分ける</strong>のに便利なんです。</p>
+<hr />
+<p>タグの設定ができたら、ジャンプ処理がうまく動くはずです！<br />
+他にも分からない用語や機能があれば、気軽に聞いてくださいね。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>// 矢印キーが押されたときの移動処理<br />
+    if (Input.GetKey(KeyCode.UpArrow))<br />
+    {<br />
+        rb.MovePosition(transform.position + transform.forward * moveSpeed * Time.deltaTime); // 前進<br />
+    }<br />
+    if (Input.GetKey(KeyCode.DownArrow))<br />
+    {<br />
+        rb.MovePosition(transform.position - transform.forward * moveSpeed * Time.deltaTime); // 後退<br />
+    }<br />
+    if (Input.GetKey(KeyCode.LeftArrow))<br />
+    {<br />
+        rb.MovePosition(transform.position - transform.right * moveSpeed * Time.deltaTime); // 左移動<br />
+    }<br />
+    if (Input.GetKey(KeyCode.RightArrow))<br />
+    {<br />
+        rb.MovePosition(transform.position + transform.right * moveSpeed * Time.deltaTime); // 右移動<br />
+    }</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>とても良いコードです！<br />
+このコードは <strong>Rigidbody を使って物理演算的にキャラクターを移動させる</strong>方法で、初心者にもおすすめの書き方です。</p>
+<hr />
+<h2>✅ このコードの動き（整理）</h2>
+<p>この処理は、<strong>矢印キーが押されたときに</strong> <code>Rigidbody.MovePosition()</code> を使ってキャラクター（またはオブジェクト）を移動させています。</p>
+<ul>
+<li><code>transform.forward</code>: Z軸方向（前）</li>
+<li><code>transform.right</code>: X軸方向（右）</li>
+<li><code>moveSpeed * Time.deltaTime</code>: フレームレートに依存しないスムーズな移動速度</li>
+</ul>
+<hr />
+<h2>🔄 全体スクリプトの例（完成形）</h2>
+<p>[CODE OMITTED]</p>
+<hr />
+<h2>✅ 注意点</h2>
+<ol>
+<li><strong>オブジェクトに Rigidbody を追加しておく</strong></li>
+<li>Rigidbody の <strong>「Constraints」→「Freeze Rotation」</strong> のチェックを Y以外全部 ON にすると、倒れたり回転したりしません</li>
+<li>このスクリプトをアタッチしたオブジェクトがカメラの正面とズレていると、<strong>矢印キーの向きと移動方向が違う</strong>と感じることがあります</li>
+</ol>
+<hr />
+<h2>🧠 応用アイデア（もしステップアップしたければ）</h2>
+<ul>
+<li>カメラ方向に対して移動（TPS風）</li>
+<li>ジャンプを追加</li>
+<li>アニメーションと連動</li>
+<li>スムーズな回転（<code>Quaternion.Lerp</code> など）</li>
+</ul>
+<hr />
+<p>ほかのコードも見てほしい・一緒に動かしたいものがあれば、何でも言ってくださいね！</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>今のコードでキャラクターが動かなかった</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>了解です！キャラクターが動かなかった理由はいくつか考えられます。<br />
+以下のチェックリストに沿って確認＆修正してみましょう。</p>
+<hr />
+<h2>✅ 1. Rigidbody の設定確認</h2>
+<ul>
+<li>キャラクターに <code>Rigidbody</code> が<strong>正しく追加されているか？</strong></li>
+<li>Rigidbody の <strong>「Is Kinematic」は</strong>オフにしてください（オンだと <code>MovePosition</code> が効きません）。</li>
+<li>Rigidbody の「Constraints」で不要な回転・移動が制限されていないか確認。</li>
+</ul>
+<hr />
+<h2>✅ 2. スクリプトがアタッチされているか？</h2>
+<ul>
+<li>作成したスクリプト（<code>CharacterMovement</code>など）を、<strong>キャラクターオブジェクトにアタッチしてあるか？</strong></li>
+</ul>
+<hr />
+<h2>✅ 3. <code>moveSpeed</code> の値が小さすぎないか？</h2>
+<p>[CODE OMITTED]</p>
+<ul>
+<li><code>moveSpeed = 0</code> だと動かないので、<strong>1.0〜10.0あたり</strong>を設定して試してみてください。</li>
+</ul>
+<hr />
+<h2>✅ 4. Update内で MovePosition を複数回呼んでいる</h2>
+<p>これはUnity上、ちょっと非推奨で、<strong>Rigidbody.MovePosition() は FixedUpdate で1回だけが理想</strong>です。</p>
+<hr />
+<h2>🔧 改善版：FixedUpdate + 入力まとめ</h2>
+<p>[CODE OMITTED]</p>
+<hr />
+<h2>💡補足</h2>
+<ul>
+<li><code>Update()</code>で入力を取り、<code>FixedUpdate()</code>で実際に物理的な移動をすることで、<strong>滑らかかつ正しい動作</strong>になります。</li>
+<li><code>normalized</code> によって、斜め移動が速くなりすぎるのを防いでいます。</li>
+</ul>
+<hr />
+<p>試してみて、それでも動かないようなら「プレハブ名・インスペクタ設定のスクショ」など教えてもらえるともっと的確にアドバイスできます！</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>例のコードを出して</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>了解です！<br />
+ここでは <strong>「プレイヤーがコインに触れると消えて、スコアがUIに表示される」</strong>基本コード一式を紹介します。</p>
+<hr />
+<h2>🎮 問題4：コインを取る – 解答例コード</h2>
+<h3>✅ ① コイン側のスクリプト <code>Coin.cs</code></h3>
+<p>[CODE OMITTED]</p>
+<hr />
+<h3>✅ ② スコア管理スクリプト <code>ScoreManager.cs</code></h3>
+<p>[CODE OMITTED]</p>
+<hr />
+<h2>🛠 シーンの準備手順</h2>
+<h3>1. プレイヤーとコインの設定</h3>
+<ul>
+<li>プレイヤーには <code>Tag → Player</code> を設定</li>
+<li>プレイヤーに <strong>Rigidbody</strong> をアタッチ（※<code>Is Kinematic = false</code>）</li>
+<li>コインには <strong>Collider（Box, Sphere など）</strong> を追加し、<strong>「Is Trigger」ON</strong> にする</li>
+<li>コインに <code>Coin.cs</code> をアタッチ</li>
+</ul>
+<h3>2. UI テキストの設定</h3>
+<ul>
+<li>シーンに UI → Text（または TextMeshPro）を追加</li>
+<li><code>ScoreManager</code> オブジェクトを作成（空のGameObjectでもOK）</li>
+<li><code>ScoreManager.cs</code> をアタッチ</li>
+<li><code>Score Text</code> に上で作ったTextをドラッグで割り当て</li>
+</ul>
+<hr />
+<h2>✅ 最終的な動作確認</h2>
+<ul>
+<li>プレイヤーがコインに触れると、コインが消えて、スコアが「Score: 1」「Score: 2」...と表示されます。</li>
+</ul>
+<hr />
+<p>「TextMeshProでやりたい」や「2D対応で出してほしい」などもOKです。<br />
+必要なら Prefab 設計や UI の位置調整ヒントも出せますよ！</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>ここkwsk</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>いい質問です！<br />
+これは「<strong>Unityのインスペクターで、スクリプトにUI要素（Textなど）を関連付ける作業</strong>」のことです。以下に詳しく説明します。</p>
+<hr />
+<h2>🧭 前提：<code>ScoreManager.cs</code> のこの部分に注目</h2>
+<p>[CODE OMITTED]</p>
+<p>これは「<strong>Unity上でText（UI）をドラッグ＆ドロップで指定できるようにする</strong>」ための宣言です。</p>
+<hr />
+<h2>✅ ステップバイステップで解説</h2>
+<h3>🎯 目的：</h3>
+<p>スコア表示用の <code>Text</code> UI を、<code>ScoreManager</code> スクリプトの <code>scoreText</code> に<strong>割り当てる</strong>。</p>
+<hr />
+<h3>🔧 手順：</h3>
+<p>① <strong>Canvas を作成</strong>（まだなければ）<br />
+- メニューから <code>GameObject &gt; UI &gt; Canvas</code> を選ぶ</p>
+<p>② <strong>Text（または Text - TextMeshPro）を作成</strong><br />
+- メニューから <code>GameObject &gt; UI &gt; Text</code> を選ぶ<br />
+- できた Text を「ScoreText」などわかりやすい名前に変更<br />
+- この Text に初期表示で <code>"Score: 0"</code> と書いておくとわかりやすい</p>
+<p>③ <strong>ScoreManager の空オブジェクトを作る</strong><br />
+- <code>GameObject &gt; Create Empty</code> で <code>ScoreManager</code> という名前の空オブジェクトを作る<br />
+- そこに <code>ScoreManager.cs</code> スクリプトをアタッチ</p>
+<p>④ <strong>Text をドラッグで割り当てる</strong><br />
+- <code>ScoreManager</code> オブジェクトをクリック<br />
+- インスペクターを確認すると、<code>Score Text</code> という空欄が見える<br />
+- <strong>ヒエラルキー内の「ScoreText」オブジェクトをドラッグして、そこにドロップ！</strong></p>
+<p>👉 これで、スクリプトが UI の Text を操作できるようになります。</p>
+<hr />
+<h3>✅ ここまででこうなる！</h3>
+<p>[CODE OMITTED]</p>
+<p>この状態なら、<code>scoreText.text = "Score: " + score;</code> が正常に動作して UI にスコアが反映されます。</p>
+<hr />
+<h2>💡補足：TextMeshPro の場合は？</h2>
+<p>TextMeshPro を使っているなら、以下のようにスクリプトを少しだけ変更する必要があります：</p>
+<p>[CODE OMITTED]</p>
+<p>UI に追加するのは <code>UI &gt; Text - TextMeshPro</code> です。あとは同じくドラッグ＆ドロップで割り当てればOK！</p>
+<hr />
+<p>必要なら <strong>スクリーンショット風の図解</strong> も作れます。続きの機能やエラー対応もOKです！</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>例のコードをお願い</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>了解です！<br />
+以下は「<strong>プレイヤーが近づいて E キーを押すと一度だけドアが開く</strong>」という<strong>問題5の解答例コード</strong>です。</p>
+<hr />
+<h2>✅ スクリプト：<code>DoorOpener.cs</code></h2>
+<p>[CODE OMITTED]</p>
+<hr />
+<h2>🛠 シーン設定手順</h2>
+<ol>
+<li><strong>ドアオブジェクト</strong>にこのスクリプト <code>DoorOpener.cs</code> をアタッチ  </li>
+<li><strong>プレイヤーの Transform をインスペクターの <code>player</code> フィールドにドラッグ</strong></li>
+<li><code>openDistance</code> を 3〜5 程度に設定（「近くに来た」と判定する距離）</li>
+<li>ドアの開く方向を調整したい場合は <code>openAngle</code> を変更（Y軸）</li>
+</ol>
+<hr />
+<h2>✅ 挙動まとめ</h2>
+<ul>
+<li>プレイヤーがドアに近づくと「Eキー」が反応する</li>
+<li>一度押すとドアが <code>openAngle</code> だけ回転して開く</li>
+<li>2回目以降は反応しない（<code>hasOpened = true</code> になる）</li>
+</ul>
+<hr />
+<h2>🔁 応用ヒント（余力があれば）</h2>
+<ul>
+<li>ドアが開いたら「カチッ」というSEを鳴らす</li>
+<li>ドアが閉じる処理を追加する（タイマー or 再度Eキーなど）</li>
+<li>UI表示「[E]で開く」を表示する（Canvas + World Space）</li>
+</ul>
+<hr />
+<p>必要ならこのドアに<strong>アニメーション</strong>を使うバージョンや<strong>2D対応版</strong>も作れますよ！</p></div>
+            </div>
+    </div>
+  </div>
+</body>
+</html>

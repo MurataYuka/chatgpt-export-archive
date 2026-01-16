@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unity マゼンタ対処法</title>
+<style>
+  :root {
+    --bg: #0b0f19;
+    --panel: #0f172a;
+    --bubbleL: #111827;
+    --bubbleR: #1f2937;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --border: rgba(255,255,255,.08);
+    --maxw: 920px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f7f7f8;
+      --panel: #ffffff;
+      --bubbleL: #ffffff;
+      --bubbleR: #f3f4f6;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: rgba(0,0,0,.08);
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 20px 16px 64px;
+  }
+  .title {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 8px 0 14px;
+    user-select: none;
+  }
+  .chat {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 12px;
+  }
+  .row {
+    display: flex;
+    margin: 10px 0;
+  }
+  .row.left { justify-content: flex-start; }
+  .row.right { justify-content: flex-end; }
+  .bubble {
+    max-width: 86%;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    white-space: normal;
+    word-break: break-word;
+  }
+  .row.left .bubble {
+    background: var(--bubbleL);
+    border-top-left-radius: 6px;
+  }
+  .row.right .bubble {
+    background: var(--bubbleR);
+    border-top-right-radius: 6px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title">Unity マゼンタ対処法</div>
+    <div class="chat">
+      <div class="row right">
+              <div class="bubble"><p>Unityアセットストアでダウンロードしたアセットのマテリアルがマゼンタになっているときの対処法</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>Unity でアセットをインポートしたときに <strong>マテリアルやテクスチャがマゼンタ（ピンク）</strong> になるのは、基本的に「参照しているシェーダーが見つからない／動作しない」ことが原因です。いくつか原因と対処法を整理します👇  </p>
+<hr />
+<h2>✅ 主な原因と対処法</h2>
+<h3>1. <strong>シェーダーがプロジェクトに存在しない</strong></h3>
+<ul>
+<li>アセットが独自シェーダーを使っているのに、そのシェーダーファイルが含まれていない場合。</li>
+<li><strong>対処法</strong></li>
+<li>インポート時に <code>Shaders</code> フォルダをスキップしていないか確認。</li>
+<li><code>.shader</code> ファイルが存在するか確認し、なければ再インポート。</li>
+</ul>
+<hr />
+<h3>2. <strong>パイプラインの不一致</strong></h3>
+<p>Unity では描画パイプラインが 3 種類あります：<br />
+- Built-in（従来の標準レンダリング）<br />
+- URP（Universal Render Pipeline）<br />
+- HDRP（High Definition Render Pipeline）</p>
+<p>ダウンロードしたアセットが Built-in 用なのに、プロジェクトが URP/HDRP だとシェーダーが対応せず <strong>マゼンタ</strong> になります。</p>
+<ul>
+<li><strong>対処法</strong></li>
+<li>プロジェクトのパイプラインを確認：<br />
+<code>Edit &gt; Project Settings &gt; Graphics / Quality</code></li>
+<li>アセットに URP/HDRP 用のコンバーターが同梱されていれば、<br />
+<code>Assets &gt; Upgrade Materials to URP/HDRP</code> を実行。</li>
+<li>なければ手動でマテリアルの Shader を <code>Universal Render Pipeline/Lit</code> や <code>HDRP/Lit</code> に変更。</li>
+</ul>
+<hr />
+<h3>3. <strong>シェーダーのコンパイルエラー</strong></h3>
+<ul>
+<li>コンソールに <code>Shader error</code> が出ている場合。</li>
+<li><strong>対処法</strong></li>
+<li>Console ウィンドウでエラーを確認し、必要ならシェーダーコードを修正。</li>
+<li>古いアセットの場合は Unity のバージョンに合わずエラーが出ていることもあるので、アセットストアのページで「対応 Unity バージョン」を確認。</li>
+</ul>
+<hr />
+<h3>4. <strong>テクスチャが欠損している</strong></h3>
+<ul>
+<li>シェーダーはあるが、テクスチャがインポートされていない。</li>
+<li><strong>対処法</strong></li>
+<li>マテリアルを選択して、<code>Albedo</code> などのスロットにテクスチャが割り当てられているか確認。</li>
+<li>無い場合はアセット内の <code>Textures</code> フォルダから手動で設定。</li>
+</ul>
+<hr />
+<h3>5. <strong>グラフィック設定やビルド対象の不一致</strong></h3>
+<ul>
+<li>Mobile 用アセットを PC で使うと一部のシェーダーが動かないことも。</li>
+<li><strong>対処法</strong></li>
+<li>マテリアルを簡易シェーダー（例: <code>Unlit/Texture</code> や <code>URP/Lit</code>）に置き換えて表示確認。</li>
+</ul>
+<hr />
+<h2>🔧 最終手段</h2>
+<ul>
+<li><strong>すべてのマテリアルを一括変換</strong></li>
+<li>URP なら <code>Edit &gt; Render Pipeline &gt; Universal Render Pipeline &gt; Upgrade Project Materials to URP Materials</code>  </li>
+<li>HDRP なら同様に HDRP 用メニューから変換  </li>
+</ul>
+<hr />
+<p>👉 まずは、<br />
+- コンソールエラーが出ていないか？<br />
+- プロジェクトが Built-in / URP / HDRP のどれなのか？  </p>
+<p>ここを確認すると解決が早いです。  </p>
+<hr />
+<p>先に聞きたいんですが、あなたのプロジェクトは <strong>URP / HDRP / Built-in のどれ</strong>で作っていますか？</p></div>
+            </div>
+    </div>
+  </div>
+</body>
+</html>

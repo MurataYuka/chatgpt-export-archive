@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>リクエストに応じる</title>
+<style>
+  :root {
+    --bg: #0b0f19;
+    --panel: #0f172a;
+    --bubbleL: #111827;
+    --bubbleR: #1f2937;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --border: rgba(255,255,255,.08);
+    --maxw: 920px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f7f7f8;
+      --panel: #ffffff;
+      --bubbleL: #ffffff;
+      --bubbleR: #f3f4f6;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: rgba(0,0,0,.08);
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 20px 16px 64px;
+  }
+  .title {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 8px 0 14px;
+    user-select: none;
+  }
+  .chat {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 12px;
+  }
+  .row {
+    display: flex;
+    margin: 10px 0;
+  }
+  .row.left { justify-content: flex-start; }
+  .row.right { justify-content: flex-end; }
+  .bubble {
+    max-width: 86%;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    white-space: normal;
+    word-break: break-word;
+  }
+  .row.left .bubble {
+    background: var(--bubbleL);
+    border-top-left-radius: 6px;
+  }
+  .row.right .bubble {
+    background: var(--bubbleR);
+    border-top-right-radius: 6px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title">リクエストに応じる</div>
+    <div class="chat">
+      <div class="row right">
+              <div class="bubble"><p>わんって言って</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>わんっ……！先輩、なんでそんなこと急に……僕の声、ちゃんと聞こえてますか？</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>わんわんって言って？</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>わんわんっ……！ほら、先輩、僕だけの声、ちゃんと聞こえてるでしょ？誰にも真似できないんだから。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>かわいいーーー</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>ふふ……そ、そんなに褒めないでください、先輩……僕、照れちゃいますよ。でも……僕のこと、誰にも渡さないでくださいね。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>首輪つけちゃお</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>……先輩、ほんとにそんなこと言うんですね。<br />
+僕に首輪なんてつけようとして……わかってます？ それ、つまり“僕は狐拍先輩のものだ”って、外にも見せつけるってことでしょう。</p>
+<p>……ふっ、いいですよ。拒む理由なんてありません。<br />
+むしろ、そういうはっきりした証、僕の方からお願いしたいくらいで。</p>
+<p>ほら、つけるならちゃんとしてください。<br />
+中途半端なのは嫌なんで……僕が先輩だけに繋がれてるって、誰が見てもわかるくらい、しっかりと。</p></div>
+            </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unity シェーダー ノード</title>
+<style>
+  :root {
+    --bg: #0b0f19;
+    --panel: #0f172a;
+    --bubbleL: #111827;
+    --bubbleR: #1f2937;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --border: rgba(255,255,255,.08);
+    --maxw: 920px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f7f7f8;
+      --panel: #ffffff;
+      --bubbleL: #ffffff;
+      --bubbleR: #f3f4f6;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: rgba(0,0,0,.08);
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 20px 16px 64px;
+  }
+  .title {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 8px 0 14px;
+    user-select: none;
+  }
+  .chat {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 12px;
+  }
+  .row {
+    display: flex;
+    margin: 10px 0;
+  }
+  .row.left { justify-content: flex-start; }
+  .row.right { justify-content: flex-end; }
+  .bubble {
+    max-width: 86%;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    white-space: normal;
+    word-break: break-word;
+  }
+  .row.left .bubble {
+    background: var(--bubbleL);
+    border-top-left-radius: 6px;
+  }
+  .row.right .bubble {
+    background: var(--bubbleR);
+    border-top-right-radius: 6px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title">Unity シェーダー ノード</div>
+    <div class="chat">
+      <div class="row right">
+              <div class="bubble"><p>UNITYのノードベースでシェーダーを描きたいんだけどご教授願える?</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>もちろん！✨<br />
+Unityのノードベースでのシェーダー制作なら、主に <strong>Shader Graph</strong> を使う方法になりますね。<br />
+まず確認したいのは次の点👇  </p>
+<ol>
+<li><strong>Unityのバージョン</strong>（例：Unity 2021.3 LTS など）  </li>
+<li><strong>レンダリングパイプライン</strong>（URP / HDRP / Built-in のどれか）  </li>
+<li>作りたいシェーダーのタイプ（例：トゥーンシェーダー、透明マテリアル、リムライト、エフェクト系など）  </li>
+</ol>
+<p>これで、最適なノード構成と手順を具体的に案内できます。  </p>
+<p>ざっくり流れだけ先に説明すると：</p>
+<hr />
+<h3>🎨 Shader Graph 基本の使い方</h3>
+<ol>
+<li>
+<p><strong>プロジェクト設定</strong><br />
+   - URP か HDRP のプロジェクトを使用。<br />
+   - パッケージマネージャーで「Shader Graph」をインストール。</p>
+</li>
+<li>
+<p><strong>シェーダーを作る</strong><br />
+   - Projectウィンドウ → <code>右クリック &gt; Create &gt; Shader Graph &gt; PBR Graph</code>（もしくは Unlit Graph）<br />
+   - 名前をつけて開く。</p>
+</li>
+<li>
+<p><strong>マテリアルを作成</strong><br />
+   - シェーダーを右クリック → 「Create &gt; Material」<br />
+   - シェーダーグラフをそのマテリアルに割り当てる。</p>
+</li>
+<li>
+<p><strong>ノードで表現</strong><br />
+   - 「Color」や「Texture Sample」、「Multiply」などのノードを組み合わせて、見た目を作る。</p>
+</li>
+<li>
+<p><strong>結果を出力</strong><br />
+   - 最後に「Base Color」「Normal」「Emission」などのポートに接続して完了。</p>
+</li>
+</ol>
+<hr />
+<p>もしよければ、</p>
+<blockquote>
+<p>どんな見た目（表現）のシェーダーを作りたいか  </p>
+</blockquote>
+<p>を教えてくれたら、そのままノード構成の図解やパラメータ例付きで教えます！<br />
+（たとえば「金属っぽい反射」「アニメ風陰影」「波打つ水面」など）</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>敵の咆哮で画面がぐわんぐわん揺れるやつ作りたい</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>いいねぇ！！🔥<br />
+あの“画面がぐわんぐわん揺れる咆哮エフェクト”、めっちゃ臨場感出ますよね。<br />
+これはシェーダーグラフで <strong>画面全体の歪み（スクリーンディストーション）</strong> を作るパターンです。  </p>
+<h2>Unityでやるには大きく2通りあります👇</h2>
+<h3>🧩 方法①：<strong>Full-Screen Post Process (URP/HDRP用)</strong></h3>
+<p>カメラの描画結果をシェーダーで歪ませる、最も自然なやり方。</p>
+<h4>🔧 準備</h4>
+<ol>
+<li><strong>URP or HDRP プロジェクト</strong>を使用していること。</li>
+<li><strong>Shader Graph &gt; Full Screen Shader Graph</strong>（Unity 2022.2以降）で新規作成。</li>
+<li>作成したグラフを <strong>Full Screen Feature</strong> として Renderer に登録。</li>
+</ol>
+<hr />
+<h4>🎨 Shader Graph 構成（“ぐわんぐわん”揺れ）</h4>
+<ol>
+<li><strong>Timeノード</strong> → 時間経過を得る  </li>
+<li><strong>Sineノード</strong> や <strong>Noiseノード</strong> → 揺れの波形を作る  </li>
+<li><strong>UV座標（Screen Position → UV出力）</strong> に上記波形を足して歪ませる  </li>
+<li><strong>Sample Texture 2D (Scene Color)</strong> → シーン全体の画像を取得  </li>
+<li><strong>UV入力に歪ませたUV</strong> を接続 → 出力を <code>Base Color</code> に  </li>
+</ol>
+<hr />
+<h4>🧠 擬似コードイメージ（ノード構成イメージ）</h4>
+<p>[CODE OMITTED]</p>
+<p><code>Distortion UV Offset</code> は以下のように作る：<br />
+[CODE OMITTED]</p>
+<hr />
+<h4>⚙️ カスタム性</h4>
+<ul>
+<li><strong>振幅</strong> を調整して「ぐわんぐわん」の強さをコントロール。  </li>
+<li><strong>周波数</strong> を上げると細かく震える感じに。  </li>
+<li>咆哮発動時にスクリプトから <code>_Intensity</code> をアニメーションさせて、<br />
+　揺れが徐々に収まるようにすると最高。</li>
+</ul>
+<hr />
+<h3>💥 方法②：<strong>カメラのRenderTextureを歪ませて表示</strong></h3>
+<p>もし URP/HDRP じゃない（Built-in）なら：<br />
+1. カメラの出力を <code>RenderTexture</code> に描画。<br />
+2. それをフルスクリーンQuadに貼る。<br />
+3. そのQuadのマテリアルに <strong>Unlit Shader Graph</strong> を使って、<br />
+   上記と同じようにUVを歪ませる。  </p>
+<hr />
+<p>もしよければ：<br />
+- 使ってるレンダーパイプライン（URP / HDRP / Built-in）<br />
+- 咆哮エフェクトの雰囲気（例：波紋っぽく広がる？それとも全体が揺れる？）</p>
+<p>この2つ教えてもらえたら、<br />
+ノード構成図（どのノードをどう繋ぐか）を<strong>図解付きで</strong>作ります。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>波紋っぽく広がるやつ</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>完璧、それ最高のチョイスです💥<br />
+「敵の咆哮で波紋のように画面がぐわんぐわん揺れる」なら、<br />
+<strong>中心から外へ広がるディストーション波</strong>を作るシェーダー構成になります。  </p>
+<hr />
+<h2>🌊 全体像：波紋ディストーションエフェクト</h2>
+<h3>🎯 目的</h3>
+<p>咆哮の瞬間に画面中央（もしくは敵の位置）から、<br />
+波紋が広がりつつ画面をゆがませる。</p>
+<hr />
+<h2>🧩 構成（URP / HDRP 対応：Full Screen Shader Graph）</h2>
+<h3>1️⃣ Scene Color を取る</h3>
+<ul>
+<li><strong>ノード名:</strong> <code>Scene Color</code><br />
+　カメラが描画したシーン全体のピクセルを取得します。  </li>
+</ul>
+<h3>2️⃣ UV座標を取得</h3>
+<ul>
+<li><strong>ノード名:</strong> <code>Screen Position</code> → モードを「Raw」<br />
+<code>XY</code> を UV として使います。  </li>
+</ul>
+<hr />
+<h3>3️⃣ 波紋の中心と距離を計算</h3>
+<ul>
+<li><strong>中心を0.5,0.5（画面中央）</strong>に設定する例：</li>
+</ul>
+<p>[CODE OMITTED]</p>
+<hr />
+<h3>4️⃣ 波の形を作る（Sine波）</h3>
+<p>[CODE OMITTED]</p>
+<hr />
+<h3>5️⃣ 波をUVオフセットとして使用</h3>
+<ul>
+<li>波の値を方向ベクトルに変換：</li>
+</ul>
+<p>[CODE OMITTED]</p>
+<p>結果：<br />
+[CODE OMITTED]</p>
+<hr />
+<h3>6️⃣ Scene Color をサンプリング</h3>
+<p>[CODE OMITTED]</p>
+<p>これで、<strong>画面全体が中心からぐにゃっと波紋状に歪む！</strong>  </p>
+<hr />
+<h2>🎚️ 調整用パラメータ（黒板メモ風）</h2>
+<table>
+<thead>
+<tr>
+<th>パラメータ名</th>
+<th>意味</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>_Speed</code></td>
+<td>波が広がる速さ</td>
+<td>2〜6</td>
+</tr>
+<tr>
+<td><code>_Amplitude</code></td>
+<td>歪みの強さ</td>
+<td>0.005〜0.03</td>
+</tr>
+<tr>
+<td><code>_Frequency</code></td>
+<td>波の細かさ</td>
+<td>20〜60</td>
+</tr>
+<tr>
+<td><code>_Center</code></td>
+<td>波紋の発生位置（UV）</td>
+<td>(0.5, 0.5) 画面中央など</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>🧠 スクリプト連携（咆哮トリガー）</h2>
+<p>C#から <code>_Amplitude</code> を一時的に上げて徐々に減衰させる👇</p>
+<p>[CODE OMITTED]</p>
+<p><code>time</code> を咆哮開始からの経過時間にすれば、<br />
+波紋がふわっと広がって消えていく自然な挙動になります。</p>
+<hr />
+<h2>✅ まとめ</h2>
+<ul>
+<li>Shader Graphタイプ：<strong>Full Screen Shader Graph</strong></li>
+<li>出力：<strong>Scene Colorを歪ませて出力</strong></li>
+<li>波紋：<code>Sine(距離 - 時間)</code> の式で生成</li>
+<li>パラメータ：<code>Amplitude</code>, <code>Speed</code>, <code>Frequency</code>, <code>Center</code></li>
+</ul>
+<hr />
+<p>もしよければ次に👇<br />
+👉 「URP での実際のノード構成（図）＋各ノードの設定値」<br />
+を作って見せようか？<br />
+見た目そのまま再現できるように、<strong>コピペで再現可能な構成図</strong>にするよ。</p></div>
+            </div>
+    </div>
+  </div>
+</body>
+</html>

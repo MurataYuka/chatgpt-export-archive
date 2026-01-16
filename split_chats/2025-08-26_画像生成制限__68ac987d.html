@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>画像生成制限</title>
+<style>
+  :root {
+    --bg: #0b0f19;
+    --panel: #0f172a;
+    --bubbleL: #111827;
+    --bubbleR: #1f2937;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --border: rgba(255,255,255,.08);
+    --maxw: 920px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f7f7f8;
+      --panel: #ffffff;
+      --bubbleL: #ffffff;
+      --bubbleR: #f3f4f6;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: rgba(0,0,0,.08);
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 20px 16px 64px;
+  }
+  .title {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 8px 0 14px;
+    user-select: none;
+  }
+  .chat {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 12px;
+  }
+  .row {
+    display: flex;
+    margin: 10px 0;
+  }
+  .row.left { justify-content: flex-start; }
+  .row.right { justify-content: flex-end; }
+  .bubble {
+    max-width: 86%;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    white-space: normal;
+    word-break: break-word;
+  }
+  .row.left .bubble {
+    background: var(--bubbleL);
+    border-top-left-radius: 6px;
+  }
+  .row.right .bubble {
+    background: var(--bubbleR);
+    border-top-right-radius: 6px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title">画像生成制限</div>
+    <div class="chat">
+      <div class="row right">
+              <div class="bubble"><p>宇宙船内部の画像を出して</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>{'content_type': 'code', 'language': 'json', 'response_format_name': None, 'text': '{"prompt":"近未来の宇宙船の内部。金属の壁と配管、発光する制御盤、たくさんの点滅するランプが並ぶ。未来的でリアルなデザイン。","size":"1024x1024","n":1}'}</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>{'content_type': 'system_error', 'name': 'ChatGPTAgentToolException', 'text': 'Before doing anything else, explicitly explain to the user that you were unable to invoke the image_gen tool right now. Make sure to begin your response with "You\'ve hit the free plan limit for image generations requests. You can create more images when the limit resets in 22 hours and 47 minutes.". DO NOT UNDER ANY CIRCUMSTANCES retry using this tool until a new request is given. Do NOT try to answer the user\'s original question. '}</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>You've hit the free plan limit for image generations requests. You can create more images when the limit resets in 22 hours and 47 minutes.</p></div>
+            </div>
+    </div>
+  </div>
+</body>
+</html>

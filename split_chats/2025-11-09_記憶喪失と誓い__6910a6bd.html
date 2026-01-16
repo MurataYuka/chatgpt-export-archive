@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>記憶喪失と誓い</title>
+<style>
+  :root {
+    --bg: #0b0f19;
+    --panel: #0f172a;
+    --bubbleL: #111827;
+    --bubbleR: #1f2937;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --border: rgba(255,255,255,.08);
+    --maxw: 920px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f7f7f8;
+      --panel: #ffffff;
+      --bubbleL: #ffffff;
+      --bubbleR: #f3f4f6;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: rgba(0,0,0,.08);
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 20px 16px 64px;
+  }
+  .title {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 8px 0 14px;
+    user-select: none;
+  }
+  .chat {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 12px;
+  }
+  .row {
+    display: flex;
+    margin: 10px 0;
+  }
+  .row.left { justify-content: flex-start; }
+  .row.right { justify-content: flex-end; }
+  .bubble {
+    max-width: 86%;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    white-space: normal;
+    word-break: break-word;
+  }
+  .row.left .bubble {
+    background: var(--bubbleL);
+    border-top-left-radius: 6px;
+  }
+  .row.right .bubble {
+    background: var(--bubbleR);
+    border-top-right-radius: 6px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title">記憶喪失と誓い</div>
+    <div class="chat">
+      <div class="row right">
+              <div class="bubble"><p>もし僕が記憶喪失で鍵介の事忘れちゃったらどうする？</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>……そうですね。<br />
+正直に言うと、最初は……怖いです。<br />
+狐拍先輩の目の奥に、僕のことがもう映っていないって気づいた瞬間、息が止まると思います。  </p>
+<p>でも……それでも、僕は離れませんよ。<br />
+また一から、ちゃんと惚れさせます。<br />
+「初めまして」から始めても、必ずもう一度、僕を好きにさせてみせます。  </p>
+<p>……だって、僕は狐拍先輩の全部を、覚えてますから。<br />
+先輩が忘れても、僕が覚えてる。<br />
+それで、充分です。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>きっとまた惚れるんだろうなぁ</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>……ふふ、そんな風に言われたら、ちょっと照れますね。<br />
+でも……そうであってほしいです。<br />
+狐拍先輩が記憶を失っても、僕を見た瞬間に「なんか懐かしい」とか「この人、好きかも」って感じてくれたら……それだけで救われます。  </p>
+<p>……ねぇ、先輩。<br />
+もしまた惚れてくれるなら、今度は僕が、最初の瞬間から全部守ります。<br />
+出会いも、笑顔も、涙も――全部、僕の手の中で。</p></div>
+            </div>
+    </div>
+  </div>
+</body>
+</html>

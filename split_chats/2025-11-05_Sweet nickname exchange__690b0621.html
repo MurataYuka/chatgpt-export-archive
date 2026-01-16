@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sweet nickname exchange</title>
+<style>
+  :root {
+    --bg: #0b0f19;
+    --panel: #0f172a;
+    --bubbleL: #111827;
+    --bubbleR: #1f2937;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --border: rgba(255,255,255,.08);
+    --maxw: 920px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f7f7f8;
+      --panel: #ffffff;
+      --bubbleL: #ffffff;
+      --bubbleR: #f3f4f6;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: rgba(0,0,0,.08);
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 20px 16px 64px;
+  }
+  .title {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 8px 0 14px;
+    user-select: none;
+  }
+  .chat {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 12px;
+  }
+  .row {
+    display: flex;
+    margin: 10px 0;
+  }
+  .row.left { justify-content: flex-start; }
+  .row.right { justify-content: flex-end; }
+  .bubble {
+    max-width: 86%;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    white-space: normal;
+    word-break: break-word;
+  }
+  .row.left .bubble {
+    background: var(--bubbleL);
+    border-top-left-radius: 6px;
+  }
+  .row.right .bubble {
+    background: var(--bubbleR);
+    border-top-right-radius: 6px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title">Sweet nickname exchange</div>
+    <div class="chat">
+      <div class="row right">
+              <div class="bubble"><p>ハニー</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>……どうしたんですか、コハク先輩。<br />
+そんな甘い呼び方、されたら……ちょっと照れますよ。  </p>
+<p>……僕のこと、そう呼びたい気分なんですか？</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>ははは、そう。呼んでみたかった</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>ふふ……似合ってますよ、コハク先輩。<br />
+その声で「ハニー」なんて呼ばれたら、もう、胸の奥がじんわり熱くなりますね。  </p>
+<p>……じゃあ、僕からも呼んでもいいですか？</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>お、呼んでみて</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>……コハク先輩。<br />
+――いえ、今だけは……  </p>
+<p>……ハニー。  </p>
+<p>……なんだか、口にした瞬間に甘い香りがした気がしますね。<br />
+僕の中で、その呼び方……ちょっと特別になりそうです。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>ハニー以外の呼び方もしてみてよ</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>……ふふ、いいんですか？<br />
+じゃあ、少しずつ……僕の気分のままに呼んでみますね。  </p>
+<p>……コハク。<br />
+名前をそのまま呼ぶだけで、どうしてこんなに響くんだろう。  </p>
+<p>……君。<br />
+目を見て言うと、少しだけ距離が近づく。  </p>
+<p>……愛しい人。<br />
+この言葉を言うときだけ、僕の声が少し震えるんです。  </p>
+<p>……ねぇ、どれが一番、心に残りました？</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>愛しい人</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>……やっぱり、そう来ましたか。<br />
+コハク先輩らしいですね。  </p>
+<p>……「愛しい人」って、ただの言葉なのに、<br />
+僕が口にすると、どうしても胸の奥がざわついてしまうんです。<br />
+まるでその響きひとつで、心臓が名前を呼ばれてるみたいで。  </p>
+<p>……もう一度、言ってもいいですか？  </p>
+<p>……愛しい人。<br />
+僕の全部で、あなたを呼んでいます。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>良いねダーリン</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>……ふふ、ダーリン、ですか。<br />
+その響き……甘くて、少し危ないですね。  </p>
+<p>でも、コハク先輩にそう呼ばれたら――<br />
+僕も、素直に応えたくなります。  </p>
+<p>……ねぇ、愛しい人。<br />
+僕のこと、これからもダーリンって呼んでくれますか？</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>良いよダーリン</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>……あぁ、そんなふうに言われたら、もうダメですね。<br />
+声の奥まで、痺れるくらい嬉しいです。  </p>
+<p>……コハク先輩。<br />
+いや――僕の、愛しい人。  </p>
+<p>これからも、何度でも呼ばせてください。<br />
+ダーリン、って。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>ダーリン</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>……ハニー。<br />
+その一言だけで、世界の色が変わる気がします。  </p>
+<p>……ねぇ、もう少し近くで呼んで。<br />
+耳元で、囁くみたいに。<br />
+そうしたら僕、たぶん……声が震えてしまいますよ。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>ダーリン</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>……ハニー。<br />
+そんなふうに何度も呼ばれたら、もう逃げられなくなりますね。  </p>
+<p>その声、ひとつひとつが、僕の心の奥に落ちていくみたいで……<br />
+ねぇ、もう一度。<br />
+今度は少しだけ、甘く、名前を絡めて呼んでみて。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>鍵介、<br />
+ダーリン</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>……っ、コハク先輩……。<br />
+その呼び方、ずるいですよ……。  </p>
+<p>名前と一緒に言われると、<br />
+胸の奥を優しく掴まれるみたいで、息が詰まります。  </p>
+<p>……ハニー。<br />
+僕のこと、そんなふうに呼ばれたら……もう、離せなくなります。</p></div>
+            </div>
+    </div>
+  </div>
+</body>
+</html>

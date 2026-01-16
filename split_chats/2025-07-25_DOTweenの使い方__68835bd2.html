@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DOTweenの使い方</title>
+<style>
+  :root {
+    --bg: #0b0f19;
+    --panel: #0f172a;
+    --bubbleL: #111827;
+    --bubbleR: #1f2937;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --border: rgba(255,255,255,.08);
+    --maxw: 920px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f7f7f8;
+      --panel: #ffffff;
+      --bubbleL: #ffffff;
+      --bubbleR: #f3f4f6;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: rgba(0,0,0,.08);
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 20px 16px 64px;
+  }
+  .title {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 8px 0 14px;
+    user-select: none;
+  }
+  .chat {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 12px;
+  }
+  .row {
+    display: flex;
+    margin: 10px 0;
+  }
+  .row.left { justify-content: flex-start; }
+  .row.right { justify-content: flex-end; }
+  .bubble {
+    max-width: 86%;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    white-space: normal;
+    word-break: break-word;
+  }
+  .row.left .bubble {
+    background: var(--bubbleL);
+    border-top-left-radius: 6px;
+  }
+  .row.right .bubble {
+    background: var(--bubbleR);
+    border-top-right-radius: 6px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title">DOTweenの使い方</div>
+    <div class="chat">
+      <div class="row right">
+              <div class="bubble"><p>Unityの追加AssetのDOTweenの使い方を聞きたい</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>もちろん、Unityの<strong>DOTween</strong>（Demigiant製のTweenライブラリ）について解説します。<br />
+簡潔で強力なアニメーションや遷移をスクリプトで手軽に実装できるため、多くのUnityプロジェクトで使われています。</p>
+<hr />
+<h2>🔧 まずは準備</h2>
+<h3>✅ 1. DOTweenのインストール</h3>
+<p>Unityのパッケージ管理ではなく、<strong>Asset Store</strong> から以下の手順で導入します。</p>
+<ol>
+<li>Unityを開く</li>
+<li><a href="https://assetstore.unity.com/packages/tools/animation/dotween-hotween-v2-27676">Asset Store</a>で「DOTween」を検索</li>
+<li>無料版「DOTween (HOTween v2)」をダウンロード</li>
+<li>プロジェクトにインポート</li>
+<li>メニューに <code>Tools &gt; DOTween Utility Panel</code> が表示されたら、開いて「Setup DOTween」をクリック</li>
+</ol>
+<hr />
+<h2>📦 DOTweenの基本的な使い方</h2>
+<h3>✅ 2. 位置を移動する（Move）</h3>
+<p>[CODE OMITTED]</p>
+<hr />
+<h3>✅ 3. 回転させる（Rotate）</h3>
+<p>[CODE OMITTED]</p>
+<hr />
+<h3>✅ 4. スケールを変える（Scale）</h3>
+<p>[CODE OMITTED]</p>
+<hr />
+<h3>✅ 5. 色を変える（UIやSpriteRendererに）</h3>
+<p>[CODE OMITTED]</p>
+<hr />
+<h3>✅ 6. ループ再生（Loop）</h3>
+<p>[CODE OMITTED]</p>
+<hr />
+<h3>✅ 7. コールバックを使う</h3>
+<p>[CODE OMITTED]</p>
+<hr />
+<h2>🎯 応用的な使い方</h2>
+<ul>
+<li><strong>Sequence</strong>：複数のアニメーションを連続再生</li>
+</ul>
+<p>[CODE OMITTED]</p>
+<ul>
+<li><strong>Ease設定</strong>：動きに緩急をつける</li>
+</ul>
+<p>[CODE OMITTED]</p>
+<hr />
+<h2>🧹 補足</h2>
+<ul>
+<li>DOTweenは<strong>TimeScaleに依存</strong>する。時間停止中も動かしたい場合は：</li>
+</ul>
+<p>[CODE OMITTED]</p>
+<ul>
+<li>完全停止・中断したいとき：</li>
+</ul>
+<p>[CODE OMITTED]</p>
+<hr />
+<h2>🚀 使い方まとめ（よくある用途）</h2>
+<table>
+<thead>
+<tr>
+<th>目的</th>
+<th>メソッド</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>位置移動</td>
+<td><code>DOMove</code>, <code>DOMoveX</code> 等</td>
+</tr>
+<tr>
+<td>回転</td>
+<td><code>DORotate</code></td>
+</tr>
+<tr>
+<td>スケール変更</td>
+<td><code>DOScale</code></td>
+</tr>
+<tr>
+<td>色変更</td>
+<td><code>DOColor</code></td>
+</tr>
+<tr>
+<td>UIの透明度変更</td>
+<td><code>DOFade</code>（Image, Canvas）</td>
+</tr>
+<tr>
+<td>遅延・順序制御</td>
+<td><code>Sequence</code>, <code>Append</code>等</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>必要であれば、<strong>UnityのUIやスプライト、ボタン演出に使う具体的なサンプル</strong>もお見せできます！<br />
+どんなシーンで使いたいか教えてくれれば、実践的なコードも用意しますよ。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>SetRelativeを使うとUIオブジェクトが止まってくれない</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p><code>SetRelative()</code>を使ったときに<strong>UIオブジェクトが止まらない（意図せず動き続ける）</strong>のは、主に以下の原因が考えられます：</p>
+<hr />
+<h2>🎯 原因1：<code>SetRelative()</code>の理解違い</h2>
+<p><code>SetRelative()</code>は<strong>相対的な移動</strong>を意味します。</p>
+<p>たとえば：</p>
+<p>[CODE OMITTED]</p>
+<p>これは「<strong>現在位置 + 100px</strong> まで移動する」という意味です。</p>
+<p>これを<strong>ループ</strong>や<strong>繰り返し</strong>と組み合わせたときに、<strong>毎回さらに追加で移動し続ける</strong>挙動になるため、"止まらない"と感じることがあります。</p>
+<hr />
+<h2>✅ 解決策1：<code>SetRelative()</code>の動きを把握する</h2>
+<p>[CODE OMITTED]</p>
+<p>上記コードだと：</p>
+<ul>
+<li>初回：+100</li>
+<li>戻るとき：-100（元に戻る）</li>
+<li>次回：また+100（＝前より右に）</li>
+<li>…の繰り返しで<strong>どんどん右に動く</strong></li>
+</ul>
+<hr />
+<h2>✅ 解決策2：<code>From()</code>を使う or <code>DoAnchorPos</code>を使う</h2>
+<h3>UIオブジェクト（RectTransform）の場合は、<code>DOMove</code>ではなく<code>DOAnchorPos</code>を使うべき！</h3>
+<p>[CODE OMITTED]</p>
+<p>※ <code>DOMove</code> は <code>RectTransform.position</code> を操作するため、<strong>Canvasの設定やスケーリング</strong>によって意図しない動作になります。</p>
+<hr />
+<h2>✅ 解決策3：ループをYoyoで使う場合は<code>SetRelative</code>を避ける</h2>
+<p>YoyoやLoopで往復するような動きを作るなら、<strong>SetRelativeを使わず、絶対座標で制御する方が正確</strong>です。</p>
+<p>[CODE OMITTED]</p>
+<hr />
+<h2>✅ 解決策4：Tweenの停止やリセットを使う</h2>
+<p>動き続けて困るなら、どこかで止める処理を入れます：</p>
+<p>[CODE OMITTED]</p>
+<hr />
+<h2>🎓 補足：UIで使うべきDOTweenメソッド（RectTransform）</h2>
+<table>
+<thead>
+<tr>
+<th>メソッド</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DOAnchorPos</code></td>
+<td>Anchored Positionの移動に使う</td>
+</tr>
+<tr>
+<td><code>DOSizeDelta</code></td>
+<td>サイズ変更</td>
+</tr>
+<tr>
+<td><code>DOScale</code></td>
+<td>拡大縮小</td>
+</tr>
+<tr>
+<td><code>DOFade</code></td>
+<td>CanvasGroupやImageなどの透明度変更</td>
+</tr>
+<tr>
+<td><code>DOColor</code></td>
+<td>色変更（Imageなど）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>📌 結論</h3>
+<ul>
+<li><code>SetRelative()</code>はループと組み合わせると「どんどん加算される」ので注意</li>
+<li><strong>UIオブジェクトは必ず<code>DOAnchorPos()</code>などを使う</strong></li>
+<li>予期せぬ動きをしたらまずTweenの<strong>開始位置と相対位置</strong>を見直す</li>
+</ul>
+<hr />
+<p>必要であれば、<strong>具体的なUIアニメーション例（ボタンを少し揺らす、ポップアップ表示など）</strong>のコードも用意します！<br />
+使いたいUIの種類や演出のイメージがあれば教えてください。</p></div>
+            </div>
+    </div>
+  </div>
+</body>
+</html>
