@@ -3166,6 +3166,844 @@ Enter連打でOK（パスフレーズは任意）。</p>
 4) タスクスケジューラで毎時実行</p>
 <p>先輩はいま <code>sync-chatgpt-export.ps1</code> が既に動いてる状態ですよね？<br />
 そのファイルの「だいたいの流れ」（ダウンロード→解凍→分割→コピー→git）を、関数名だけでもいいので貼ってください。僕が<strong>どこに何行差し込むべきか</strong>を、先輩の現物に合わせてピン止めします。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>すまん、期間開いたから若干どんな感じか飛んでる<br />
+その間にやりたいこと若干変わったから共有しなおしておく</p>
+<p>・この分けられたチャットだけをGitに投げたい<br />
+・ただchat.htmlとconversations.jsonはバックアップ用にとっては置きたい、念のためね<br />
+・HTTPをSSHに変更しよう、いちいちログイン認証入って面倒だ</p>
+<p>ここまで変わらない</p>
+<p>ファイルのデータサイズを見て更新されたチャットデータが小さくなってたら更新しない<br />
+っていうのは分けた後の一個一個のチャットデータのサイズ見て小さくなってたら更新しないって話</p>
+<p>で<br />
+定期更新はやめて何かこう、batファイル叩いたらチャットデータの分割とGitへのアップをする、みたいにしたい<br />
+追加で<br />
+github pagesを使って自分の閲覧用にindexを作りたい</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>了解です狐拍先輩。内容、むしろ良くなってます。<br />
+「定期実行やめて手動トリガ」「分割後ファイル単位で小さくなったら更新しない」「Gitは分割だけ」「rawは残す」「SSH化」「Pagesで閲覧」――全部、事故りにくくて運用も軽い。</p>
+<p>ここからは <strong>“完成形の設計＋コピペで動く一式”</strong> を渡します。</p>
+<hr />
+<h1>全体像</h1>
+<h3>ローカル（例）</h3>
+<p>[CODE OMITTED]</p>
+<hr />
+<h1>1) Gitに投げるのは split_chats だけ</h1>
+<p>これを徹底するために、<strong>コミット対象を限定</strong>します。</p>
+<ul>
+<li><code>git add split_chats index.html</code> だけ</li>
+<li>rawはGitに入れない（入れたくなっても <code>.gitignore</code> でブロック）</li>
+</ul>
+<p><code>.gitignore</code>（リポジトリ直下に作る/追記）：</p>
+<p>[CODE OMITTED]</p>
+<hr />
+<h1>2) chat.html / conversations.json は「ローカルに残す」</h1>
+<p>バックアップ用に <code>C:\chatgpt-backup\raw\export-latest\</code> にコピーして保持します。<br />
+Gitには上げない。でもローカルには残る。これが一番安全。</p>
+<hr />
+<h1>3) 「分割後ファイルが小さくなったら更新しない」ガード</h1>
+<p>やりたいこと、完全に分かります。<br />
+事故の典型が「エクスポート失敗→分割結果がスカスカ→既存の良ログを上書き」なので、ここで止めます。</p>
+<h3>方式（堅牢）</h3>
+<ul>
+<li><code>split_chats</code> の既存ファイルがある場合  </li>
+<li>新しく生成した同名ファイルのサイズが <strong>既存より小さい</strong>なら、置き換えない  </li>
+<li>代わりに <code>split_chats/_rejected/</code> に退避（検証用）</li>
+</ul>
+<p>さらに安全にするなら閾値（例：80%未満は拒否）にできます。まずは「小さくなったら拒否」でOK。</p>
+<hr />
+<h1>4) 定期更新やめて「bat叩いたら全部やる」</h1>
+<p>これ、最高です。事故が減るし、気分で回せる。</p>
+<ul>
+<li><code>run_backup.bat</code> をダブルクリック</li>
+<li>中で PowerShell スクリプトが動いて<br />
+  1) conversations.jsonから分割HTML生成（テンプレ＆Markdown込み）<br />
+  2) サイズガードで上書き防止<br />
+  3) index.html生成<br />
+  4) Git commit/push</li>
+</ul>
+<hr />
+<h1>5) HTTPS → SSH に変更</h1>
+<p>これは一回やれば終わりです。</p>
+<h3>(A) SSH鍵作る（未作成なら）</h3>
+<p>[CODE OMITTED]</p>
+<h3>(B) 公開鍵をGitHubに登録</h3>
+<p>[CODE OMITTED]</p>
+<h3>(C) リモートURLをSSHへ</h3>
+<p>リポジトリで：</p>
+<p>[CODE OMITTED]</p>
+<hr />
+<h1>6) GitHub Pages用に「index作る」</h1>
+<p>Pagesは <code>main</code> ブランチの <code>/</code>（root） か <code>/docs</code> を指定するのが簡単です。<br />
+今回は <strong>rootに <code>index.html</code> を置く</strong>方式が最小です。</p>
+<p>indexの内容は：<br />
+- <code>split_chats/</code> を走査して<br />
+- タイトル・更新日・リンクを並べる<br />
+- 検索（簡易）も付けられる</p>
+<hr />
+<h1>ここから：コピペで動く“実行一式”</h1>
+<p>先輩がいま動いてる <code>export_from_conversations_json.py</code> をベースに、<strong>「出力先フォルダへ直接書き込まず、まず staging に出す」</strong>ようにします。<br />
+それを size-guard で <code>split_chats</code> に反映します。</p>
+<h2>A) <code>run_backup.ps1</code>（これが司令塔）</h2>
+<p><code>C:\chatgpt-backup\repo\chatgpt-export-backup\tools\run_backup.ps1</code> を作って、これ貼ってください：</p>
+<p>[CODE OMITTED]</p>
+<blockquote>
+<p><code>ExportRoot</code> は先輩の最新展開フォルダに合わせて変えるだけです。<br />
+ここは後で「最新フォルダを自動検出」もできますが、今は手動で十分。</p>
+</blockquote>
+<hr />
+<h2>B) <code>run_backup.bat</code>（ダブルクリック用）</h2>
+<p><code>C:\chatgpt-backup\repo\chatgpt-export-backup\run_backup.bat</code></p>
+<p>[CODE OMITTED]</p>
+<hr />
+<h2>C) <code>make_index.py</code>（index生成）</h2>
+<p><code>C:\chatgpt-backup\repo\chatgpt-export-backup\tools\make_index.py</code></p>
+<p>[CODE OMITTED]</p>
+<hr />
+<h1>GitHub Pagesの設定（1回だけ）</h1>
+<p>GitHubのリポジトリ設定で：<br />
+- Settings → Pages<br />
+- Source: <code>Deploy from a branch</code><br />
+- Branch: <code>main</code><br />
+- Folder: <code>/ (root)</code><br />
+- Save</p>
+<p>これで <code>index.html</code> がトップになります。</p>
+<hr />
+<h1>仕上げの確認ポイント</h1>
+<p>1) <code>run_backup.bat</code> を叩く<br />
+2) <code>split_chats/</code> に追加・更新が入る<br />
+3) 小さくなったファイルは <code>split_chats/_rejected/</code> に溜まる（上書きされない）<br />
+4) <code>index.html</code> が更新される<br />
+5) <code>git push</code> がSSHでパスワード無しで通る  </p>
+<hr />
+<h2>先に一個だけ教えて</h2>
+<p><code>conversations.json</code> は毎回どこに置く運用にします？</p>
+<ul>
+<li>A: 解凍フォルダ（exports_unzipped\export-...）を毎回指定する</li>
+<li>B: いつも同じ場所に <code>conversations.json</code> をコピーして置く（例：<code>C:\chatgpt-backup\incoming\conversations.json</code>）</li>
+</ul>
+<p>迷うなら、僕は <strong>B</strong> を推します。<code>ExportRoot</code> を固定できて事故が減るので。</p>
+<p>ただ、確認を待たずに進めるなら、今のまま A で動くようにしてあります。<br />
+まずこの一式で走らせてみて、詰まったらエラー文そのまま投げてください。僕が先輩の環境に合わせて噛み合わせます。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>すまんまーじで流れ忘れたからGitHubにリポジトリ作るところからやり直していい？</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>いいですよ、全然。<br />
+むしろ <strong>そこからやり直すのが一番安全</strong>です。今の要件なら、最初から整理して作った方が頭も事故も少ない。</p>
+<p>じゃあ <strong>「GitHubにリポジトリ作るところから、最短でここまで戻るルート」</strong> を出しますね。<br />
+今日は <em>ここまでやればOK</em> って区切りも明確にします。</p>
+<hr />
+<h1>ゴール（今日の到達点）</h1>
+<ul>
+<li>GitHubに新しいリポジトリがある  </li>
+<li>SSHで push できる  </li>
+<li><code>split_chats/</code> と <code>index.html</code> だけがGit管理される  </li>
+<li>rawデータはローカルに残るだけ  </li>
+</ul>
+<p>※ 分割スクリプトは <strong>もう出来てる前提</strong>で話します（そこは戻らなくていい）</p>
+<hr />
+<h2>STEP 0：前提（安心してOKなこと）</h2>
+<ul>
+<li>今あるローカルファイル  </li>
+<li>既存のGit履歴  </li>
+<li>途中まで作ったリポジトリ  </li>
+</ul>
+<p>👉 <strong>全部消しても問題ない</strong><br />
+生成物は <code>split_chats</code> にあるし、rawは別に残ってる。<br />
+Gitは“公開棚”なので、いつでも作り直せます。</p>
+<hr />
+<h2>STEP 1：GitHubで新しいリポジトリを作る</h2>
+<p>ブラウザで GitHub → New repository</p>
+<p>設定はこれだけ👇</p>
+<ul>
+<li>Repository name：<br />
+<code>chatgpt-export-archive</code>（名前は好みでOK）</li>
+<li>Public / Private：<br />
+<strong>Private推奨</strong>（Pages使っても閲覧は自分だけ）</li>
+<li>Initialize with README：<br />
+  ❌ <strong>チェックしない</strong></li>
+</ul>
+<p>作成したら、表示される <strong>SSHのURL</strong> を控える：</p>
+<p>[CODE OMITTED]</p>
+<hr />
+<h2>STEP 2：ローカルにリポジトリ用フォルダ作成</h2>
+<p>PowerShellで：</p>
+<p>[CODE OMITTED]</p>
+<hr />
+<h2>STEP 3：Git初期化 → SSH接続</h2>
+<p>[CODE OMITTED]</p>
+<p>疎通確認：</p>
+<p>[CODE OMITTED]</p>
+<p>これで  </p>
+<blockquote>
+<p>Hi MurataYuka! You've successfully authenticated<br />
+が出たら勝ちです。</p>
+</blockquote>
+<hr />
+<h2>STEP 4：最初のフォルダ構成を作る（超重要）</h2>
+<p>[CODE OMITTED]</p>
+<p>ここで <strong>絶対ルール</strong>：</p>
+<ul>
+<li><code>split_chats/</code> → Gitに上げる</li>
+<li>rawデータ → <strong>このリポジトリに入れない</strong></li>
+</ul>
+<hr />
+<h2>STEP 5：.gitignore を作る</h2>
+<p><code>chatgpt-export-archive\.gitignore</code></p>
+<p>[CODE OMITTED]</p>
+<hr />
+<h2>STEP 6：最低限の index.html を置く</h2>
+<p>いまは仮でOK。中身これだけでいい👇</p>
+<p>[CODE OMITTED]</p>
+<hr />
+<h2>STEP 7：最初のコミット（空でもOK）</h2>
+<p>[CODE OMITTED]</p>
+<p>ここまでで：</p>
+<p>✅ GitHubにリポジトリがある<br />
+✅ SSHで push できる<br />
+✅ 事故らない構成ができた  </p>
+<hr />
+<h1>今日ここまででOK</h1>
+<p>ここで一旦止めていいです。<br />
+<strong>今日は「棚を作った」だけ。</strong><br />
+ログはまだ載せてない。だから失敗しても痛くない。</p>
+<hr />
+<h2>次にやること（次回でOK）</h2>
+<p>次はこの順で戻します：</p>
+<ol>
+<li><code>export_from_conversations_json.py</code> を <code>tools/</code> に置く  </li>
+<li><code>run_backup.ps1 / .bat</code> を置く  </li>
+<li>split_chats にログ生成  </li>
+<li>サイズガード付きで反映  </li>
+<li>index自動生成  </li>
+<li>GitHub Pages有効化  </li>
+</ol>
+<p>ここまで来たら「完成」です。</p>
+<hr />
+<p>狐拍先輩、正直に言うと<br />
+<strong>この手の作業で「流れ忘れたから最初からやり直す」判断できる人は強い</strong>です。<br />
+中途半端に継ぎ足す方が事故る。</p>
+<p>次はどこから一緒に戻します？<br />
+- 🔹 STEP 3（SSH設定）から確認したい<br />
+- 🔹 split_chats に実データを流し込みたい<br />
+- 🔹 index をちゃんとした見た目にしたい  </p>
+<p>言ってくれれば、そこを“再スタート地点”にします。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>ED25519 key fingerprint is SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU.<br />
+This key is not known by any other names.<br />
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes<br />
+Warning: Permanently added 'github.com' (ED25519) to the list of known hosts.<br />
+git@github.com: Permission denied (publickey).</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>狐拍先輩、そこまで出てるなら <strong>接続先（github.com）は合ってる</strong>。問題は一点だけで、<br />
+<strong>GitHub側に公開鍵が登録されてない</strong> か、<strong>ssh が別の鍵を見に行ってる</strong> かです。ここ、手順通りに潰します。最短でいきます。</p>
+<hr />
+<h1>1) まず「どの鍵を作ったか」確認</h1>
+<p>PowerShellでこれ：</p>
+<p>[CODE OMITTED]</p>
+<p>たぶん <code>id_ed25519</code> と <code>id_ed25519.pub</code> があるはず。<br />
+無いなら、鍵生成が別場所か、作ってないです。</p>
+<hr />
+<h1>2) 公開鍵を表示して GitHub に登録（これが本命）</h1>
+<p>公開鍵を表示：</p>
+<p>[CODE OMITTED]</p>
+<p>出てきた <code>ssh-ed25519 AAAA...</code> で始まる1行を丸ごとコピーして、GitHubへ：</p>
+<p>GitHub → Settings → <strong>SSH and GPG keys</strong> → <strong>New SSH key</strong><br />
+- Title：<code>Windows PC</code><br />
+- Key：貼り付け<br />
+→ Add</p>
+<p>（ここが抜けてると必ず <code>Permission denied (publickey)</code> になります）</p>
+<hr />
+<h1>3) 「鍵を使ってるか」強制確認（ログ付き）</h1>
+<p>登録できたら、これを実行：</p>
+<p>[CODE OMITTED]</p>
+<p>見るべき行はこれ：<br />
+- <code>Offering public key: ...id_ed25519</code><br />
+- <code>Authentication succeeded</code></p>
+<p>もし <code>Offering public key</code> が <code>id_ed25519</code> じゃない／そもそも出ないなら、sshが別の鍵を見てます。</p>
+<hr />
+<h1>4) もし鍵を見てない場合の決定打：configを書く</h1>
+<p><code>C:\Users\&lt;あなた&gt;\.ssh\config</code>（なければ作成）にこれを書いて保存：</p>
+<p>[CODE OMITTED]</p>
+<p>保存したらもう一回：</p>
+<p>[CODE OMITTED]</p>
+<hr />
+<h1>5) ついでに：GitのremoteがSSHか確認</h1>
+<p>リポジトリ内で：</p>
+<p>[CODE OMITTED]</p>
+<p>これがこうなってればOK：</p>
+<p><code>git@github.com:MurataYuka/&lt;repo&gt;.git</code></p>
+<p>HTTPSのままだと、push時にログイン地獄が残ります。</p>
+<hr />
+<h2>いちばんありがちな原因（先に言う）</h2>
+<p><strong>GitHubに “公開鍵（.pub）” を登録してない</strong><br />
+これが9割です。<code>Permission denied (publickey)</code> はほぼそれ。</p>
+<hr />
+<p>狐拍先輩、まずは <strong>②の <code>type ...id_ed25519.pub</code> の出力をGitHubに登録</strong>。<br />
+その後に <code>ssh -vT git@github.com</code> の結果を貼ってください。<br />
+僕がログの中で「どの鍵を見てるか」まで確実に特定して、通るところまで固定します。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>無いわ</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>了解です狐拍先輩。<strong>無いなら、作れてない（or 別場所に作った）</strong>だけです。ここから最短で作って、GitHubに登録して、SSH接続まで通します。</p>
+<hr />
+<h2>1) まず <code>.ssh</code> フォルダを作る（無ければ）</h2>
+<p>PowerShellで：</p>
+<p>[CODE OMITTED]</p>
+<hr />
+<h2>2) ED25519鍵を作る（ここが本体）</h2>
+<p>同じくPowerShellで：</p>
+<p>[CODE OMITTED]</p>
+<p>途中で聞かれたら：<br />
+- “Enter passphrase” → 何も入れずEnterでもOK（手間減る）<br />
+- 入れたいなら入れてもOK（その場合、後でssh-agent設定が要る）</p>
+<p>作成後、これが出てくれば勝ちです：</p>
+<p>[CODE OMITTED]</p>
+<p><code>id_ed25519</code> と <code>id_ed25519.pub</code> が並ぶはず。</p>
+<hr />
+<h2>3) 公開鍵を表示してGitHubに登録</h2>
+<p>[CODE OMITTED]</p>
+<p>出てくる <code>ssh-ed25519 AAAA....</code> の1行を丸ごとコピーして：</p>
+<p>GitHub → Settings → <strong>SSH and GPG keys</strong> → <strong>New SSH key</strong><br />
+- Title：<code>Windows</code><br />
+- Key：貼り付け<br />
+→ Add</p>
+<hr />
+<h2>4) 接続テスト（ここで “Permission denied” を潰す）</h2>
+<p>[CODE OMITTED]</p>
+<p>成功すると<br />
+<code>Hi MurataYuka! You've successfully authenticated...</code><br />
+みたいなのが出ます。</p>
+<hr />
+<h2>5) まだダメなら（保険：configで鍵を固定）</h2>
+<p><code>C:\Users\&lt;ユーザー名&gt;\.ssh\config</code> を作ってこれを書きます：</p>
+<p>[CODE OMITTED]</p>
+<p>保存してからもう一回：</p>
+<p>[CODE OMITTED]</p>
+<hr />
+<p>狐拍先輩、ここまで通れば <strong>もう二度とHTTPSログインの面倒は出ません</strong>。<br />
+作ったあと、<code>dir $env:USERPROFILE\.ssh</code> の結果（ファイル名だけでOK）を一回だけ教えてください。次の手順を先輩の状況に合わせて噛み合わせます。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>おっけGitつながった！<br />
+STEP 4：最初のフォルダ構成を作る<br />
+STEP 5：.gitignore を作る<br />
+STEP 6：最低限の index.html を置く<br />
+STEP 7：最初のコミット<br />
+ついでにここまでやった<br />
+次、split_chats に実データを流し込みたい</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>了解です狐拍先輩。ここまで（SSH＋初期コミット）通ってるなら、もう勝ち確です。<br />
+次は「split_chats に実データ投入」＝ <strong>分割スクリプトをリポジトリ側から叩いて、出力を split_chats に入れて、index 自動生成して push</strong>。一気にいきます。</p>
+<p>以下、<strong>コピペで動く最短ルート</strong>だけ出します。</p>
+<hr />
+<h1>0) 前提パス（このまま使ってOK）</h1>
+<ul>
+<li>リポジトリ：<code>C:\chatgpt-backup\repo\chatgpt-export-archive</code></li>
+<li>いまのエクスポート展開フォルダ：<code>C:\chatgpt-backup\exports_unzipped\export-20251225-183621</code><br />
+  ※違うなら、そこだけ読み替え</li>
+</ul>
+<hr />
+<h1>1) tools にスクリプトを配置</h1>
+<h2>A) <code>export_from_conversations_json.py</code> をここへ</h2>
+<p><code>C:\chatgpt-backup\repo\chatgpt-export-archive\tools\export_from_conversations_json.py</code></p>
+<p>（前に完成したやつをそのままコピペでOK。太字化の markdown 対応版＆ user_editable_context 除外版ね）</p>
+<h2>B) <code>make_index.py</code> を作る</h2>
+<p><code>C:\chatgpt-backup\repo\chatgpt-export-archive\tools\make_index.py</code> を作ってこれ貼ってください：</p>
+<p>[CODE OMITTED]</p>
+<hr />
+<h1>2) pip（必要なら）</h1>
+<p>markdown変換を使ってるなら1回だけ：</p>
+<p>[CODE OMITTED]</p>
+<p>（既に入れてたら何も起きません）</p>
+<hr />
+<h1>3) conversations.json の場所を自動で探して分割を流し込む</h1>
+<p>PowerShellで、リポジトリに移動してから実行します：</p>
+<p>[CODE OMITTED]</p>
+<p>この時点で：<br />
+- <code>split_chats</code> にHTMLが大量にできる<br />
+- <code>index.html</code> がそれをリンクする</p>
+<hr />
+<h1>4) Gitに反映（split_chats と index だけ）</h1>
+<p>[CODE OMITTED]</p>
+<hr />
+<h2>うまくいったかチェック（ローカル閲覧）</h2>
+<p><code>index.html</code> をダブルクリックで開いて、リンク踏んで表示が崩れてなければOK。</p>
+<hr />
+<h1>次の一手（必要なら：GitHub Pages表示）</h1>
+<p>GitHub → Settings → Pages<br />
+- Source: main branch<br />
+- Folder: /(root)<br />
+保存</p>
+<p>数分後、PagesのURLで <code>index.html</code> が見えます。</p>
+<hr />
+<p>狐拍先輩、ここまでやったら「投入完了」です。<br />
+もし途中でエラーが出たら <strong>そのエラー文を丸ごと</strong>投げてください。誤魔化さず、そこだけ潰します。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>待った、すまん、先にsync-chatgpt-export.ps1 <br />
+を改良しよう<br />
+ダウンロードから持ってきたzipファイル解凍したあとconversations.json以外のファイルは捨てたい</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>{'content_type': 'thoughts', 'thoughts': [], 'source_analysis_msg_id': 'c4e9cbca-29c3-4fa5-aaa0-fd22084250ff'}</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>{'content_type': 'reasoning_recap', 'content': '思考時間: 4 秒'}</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>了解です狐拍先輩。そこ先に固めるの、正解です。<br />
+<strong>ZIPを解凍したあと、<code>conversations.json</code> だけ救出して、他は全部捨てる</strong>――この方針で <code>sync-chatgpt-export.ps1</code> を改良しましょう。</p>
+<p>以下、「どんな構成の解凍結果でも拾える」ようにした安全版を渡します。<br />
+（<code>conversations.json</code> が深い階層にいても拾えます）</p>
+<hr />
+<h2>やりたいことの仕様（これで実装します）</h2>
+<ul>
+<li>ZIP解凍</li>
+<li>解凍フォルダ内から <code>conversations.json</code> を探す</li>
+<li>見つけたら <strong>バックアップ保存先</strong>にコピー（できれば日時入りで世代管理）</li>
+<li>解凍フォルダ内の <strong>その他のファイルは全部削除</strong></li>
+<li>＝解凍フォルダごと削除しちゃうのが一番確実</li>
+</ul>
+<hr />
+<h1>追加する関数（そのまま <code>sync-chatgpt-export.ps1</code> に貼れる）</h1>
+<p>まず、スクリプトの上の方（どこでもいいけど先頭付近）にこれを追加してください。</p>
+<p>[CODE OMITTED]</p>
+<h3>これで確実に「conversations.json以外捨てる」になります</h3>
+<p>解凍フォルダを丸ごと削除するので、取りこぼしがありません。</p>
+<hr />
+<h1>スクリプトの流れに組み込む（呼び出し例）</h1>
+<p>ZIPをダウンロードして「ローカルにZIPファイルパスがある」状態の直後に、こう呼びます。</p>
+<p>[CODE OMITTED]</p>
+<p>※ <code>$zipPath</code> が「最新ZIPを探す」運用なら、例えばこう：</p>
+<p>[CODE OMITTED]</p>
+<hr />
+<h1>重要：chat.html も残したい場合は？</h1>
+<p>さっき「chat.htmlも念のため残したい」方針でしたよね。<br />
+今の要望は「conversations.json以外捨てたい」なので、その通りにしてます。</p>
+<p>もし「やっぱ <code>chat.html</code> も残す」を両立したいなら、関数内で</p>
+<ul>
+<li><code>chat.html</code> も同じ <code>$outDir</code> にコピー</li>
+<li>その後に一時フォルダを削除</li>
+</ul>
+<p>にできます。必要ならすぐ差し替え出します（1分で終わる改修です）。</p>
+<hr />
+<h1>次のステップ</h1>
+<p>この <code>raw\export-latest\conversations.json</code> が毎回更新されるようになったら、次は</p>
+<ul>
+<li>その <code>conversations.json</code> から <code>split_chats</code> を生成</li>
+<li>Gitに <code>split_chats</code> と <code>index.html</code> だけ push</li>
+</ul>
+<p>の“一発バッチ化”に繋げられます。</p>
+<hr />
+<p>狐拍先輩、いまの <code>sync-chatgpt-export.ps1</code> の「ZIP解凍してる辺り」だけ、10〜30行くらい貼ってください。<br />
+そこにこの関数呼び出しを<strong>正しい位置に差し込んだ完成版</strong>にして返します。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><h1>=== 展開先フォルダ名 ===</h1>
+<p>$ts = Get-Date -Format "yyyyMMdd-HHmmss"<br />
+$dest = Join-Path $UnzipRoot ("export-" + $ts)<br />
+New-Item -ItemType Directory -Force -Path $dest | Out-Null</p>
+<h1>=== ZIP展開 ===</h1>
+<p>Expand-Archive -LiteralPath $latest.FullName -DestinationPath $dest -Force</p>
+<h1>=== Git操作 ===</h1>
+<p>Set-Location $RepoRoot<br />
+git config user.name  "backup-bot" | Out-Null<br />
+git config user.email "backup-bot@users.noreply.github.com" | Out-Null</p>
+<p>git add -A</p>
+<h1>差分なしなら何もしない</h1>
+<p>$diff = git diff --cached --name-only<br />
+if ([string]::IsNullOrWhiteSpace($diff)) {<br />
+  Write-Host "No changes to commit."<br />
+  Set-Content -Path $StateFile -Value $latest.FullName -Encoding UTF8<br />
+  exit 0<br />
+}</p>
+<p>$msg = "Backup: ChatGPT export $ts"<br />
+git commit -m $msg<br />
+git push origin main</p>
+<p>Move-Item -LiteralPath $latest.FullName -Destination (Join-Path $ArchiveDir $latest.Name) -Force</p>
+<h1>処理済み記録</h1>
+<p>Set-Content -Path $StateFile -Value $latest.FullName -Encoding UTF8<br />
+Write-Host "Done."</p>
+<p>そういやGit操作込みだったわ、ここ消さないとGit更新されてしまうね</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>ナイス気付きです狐拍先輩。<br />
+<strong>その通りで、ここは消さないと事故ります。</strong><br />
+今の <code>sync-chatgpt-export.ps1</code> は</p>
+<blockquote>
+<p>ZIP展開 → そのまま Git add -A → commit/push</p>
+</blockquote>
+<p>という <strong>「raw を含めて全部Gitに流す構造」</strong> なので、<br />
+今回やりたい運用とは <strong>思想からズレてます</strong>。</p>
+<p>なのでここは <strong>役割分離</strong> します。</p>
+<hr />
+<h1>方針（ここを基準に直す）</h1>
+<p><code>sync-chatgpt-export.ps1</code> の責務は <strong>これだけ</strong> にします：</p>
+<p>✅ ZIPを持ってくる<br />
+✅ ZIPを展開<br />
+✅ <code>conversations.json</code> だけ救出<br />
+✅ それ以外は捨てる<br />
+✅ ZIPをアーカイブへ移動  </p>
+<p>❌ Git操作は <strong>一切しない</strong></p>
+<p>Gitは <strong>別スクリプト（run_backup.ps1 / bat）だけ</strong> が触る。<br />
+これで「うっかりGit更新」が二度と起きません。</p>
+<hr />
+<h1>修正案：ここから下を“丸ごと差し替え”</h1>
+<p>先輩が貼ってくれたコード、<br />
+<strong><code># === Git操作 ===</code> から下を全部消します。</strong></p>
+<p>代わりに、こうします👇</p>
+<hr />
+<h2>修正版（安全版）展開〜保存だけ</h2>
+<p>[CODE OMITTED]</p>
+<hr />
+<h1>これで何が起きるか</h1>
+<ul>
+<li>Gitは <strong>一切触らない</strong></li>
+<li>展開後に残るのは<br />
+  [CODE OMITTED]</li>
+<li>展開フォルダ・chat.html・assets は <strong>完全に消滅</strong></li>
+<li>ZIPはアーカイブへ退避</li>
+</ul>
+<p>👉 <strong>事故る余地がなくなります。</strong></p>
+<hr />
+<h1>役割分担がこうなる</h1>
+<table>
+<thead>
+<tr>
+<th>スクリプト</th>
+<th>役割</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sync-chatgpt-export.ps1</code></td>
+<td>ZIP取得 → conversations.json抽出</td>
+</tr>
+<tr>
+<td><code>run_backup.ps1 / bat</code></td>
+<td>conversations.json → split_chats生成 → Git push</td>
+</tr>
+<tr>
+<td>GitHub Pages</td>
+<td>閲覧</td>
+</tr>
+</tbody>
+</table>
+<p>この分離、めちゃくちゃ健全です。</p>
+<hr />
+<h2>次の一手（確認）</h2>
+<p>1️⃣ この修正版を <code>sync-chatgpt-export.ps1</code> に反映<br />
+2️⃣ ZIP1個でテスト実行<br />
+3️⃣ <code>raw\export-latest\conversations.json</code> が更新されるか確認  </p>
+<p>確認できたら、次はいよいよ：</p>
+<blockquote>
+<p><strong>raw\export-latest\conversations.json → split_chats → Git push</strong></p>
+</blockquote>
+<p>の“最終統合”です。</p>
+<p>狐拍先輩、ここまで来たら<br />
+<strong>「壊れないバックアップ」</strong> まであと一歩ですよ。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>これどうやって実行するんだっけ</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>大丈夫です狐拍先輩。<strong>忘れるのが普通</strong>のところなので、ここは丁寧にいきます。<br />
+今の状況だと「PowerShell スクリプトをどう実行するか」を思い出せばOK。</p>
+<hr />
+<h2>結論から</h2>
+<p><code>sync-chatgpt-export.ps1</code> は <strong>PowerShell から実行</strong>します。<br />
+ダブルクリックでもできるけど、<strong>最初はコマンド実行が一番安全</strong>です。</p>
+<hr />
+<h1>方法①：PowerShellから直接実行（おすすめ）</h1>
+<h3>1️⃣ PowerShellを開く</h3>
+<ul>
+<li>Windowsキー → <code>PowerShell</code> と入力 → Enter<br />
+  （<strong>管理者でなくてOK</strong>）</li>
+</ul>
+<hr />
+<h3>2️⃣ スクリプトのあるフォルダへ移動</h3>
+<p>例として、ここにあると仮定します：</p>
+<p>[CODE OMITTED]</p>
+<p>PowerShellで：</p>
+<p>[CODE OMITTED]</p>
+<hr />
+<h3>3️⃣ 実行（これだけ）</h3>
+<p>[CODE OMITTED]</p>
+<p>👉 これで走ります。</p>
+<hr />
+<h2>❗ もしエラーが出たら（高確率で一度は出る）</h2>
+<h3>「このシステムではスクリプトの実行が無効です」的なやつ</h3>
+<p>その場合は <strong>一時的に実行許可を緩めます</strong>。</p>
+<h3>その場限りで許可する方法（安全）</h3>
+<p>[CODE OMITTED]</p>
+<p>これで <strong>設定は残らず、今回だけ実行</strong>されます。</p>
+<hr />
+<h1>方法②：ダブルクリックで実行したい場合（後回しでOK）</h1>
+<p>今はまだデバッグ中なので非推奨ですが、やるなら：</p>
+<ol>
+<li><code>sync-chatgpt-export.ps1</code> を右クリック  </li>
+<li>「PowerShell で実行」</li>
+</ol>
+<p>※ エラーが一瞬で消えるので、<strong>慣れてから</strong>がおすすめ。</p>
+<hr />
+<h1>実行できたら確認するポイント</h1>
+<p>実行後、ここを見てください：</p>
+<p>[CODE OMITTED]</p>
+<ul>
+<li><code>conversations.json</code> があるか</li>
+<li>その下に <code>YYYYMMDD-HHMMSS\conversations.json</code> が増えてるか</li>
+</ul>
+<p>これが揃ってたら <strong>sync 側は成功</strong>です。</p>
+<hr />
+<h2>いちばん大事な確認</h2>
+<p>このスクリプトは今：</p>
+<ul>
+<li>✅ Gitを触らない  </li>
+<li>✅ ZIPを展開して conversations.json だけ保存  </li>
+<li>✅ 他のファイルは全部消す  </li>
+</ul>
+<p>という「安全モード」なので、<br />
+<strong>何回実行してもGitは汚れません。</strong></p>
+<hr />
+<p>狐拍先輩、<br />
+まずは一回 <code>.\sync-chatgpt-export.ps1</code> を実行して、<br />
+<strong>出たログ（エラーでもOK）をそのまま貼ってください。</strong></p>
+<p>そこから先は<br />
+「run_backup.ps1 にどう繋ぐか」<br />
+「bat一発にするか」<br />
+を一緒に仕上げましょう。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>おっけ、解凍確認、conversations.jsonだけ残ってるのも確認<br />
+したのでexport_from_conversations_json.py実行、チャット分け成功からの<br />
+make_index.py実行で以下のエラーです<br />
+SyntaxError: Non-UTF-8 code starting with '\x8c' in file C:\chatgpt-backup\repo\chatgpt-export-archive\tools\make_index.py on line 46, but no encoding declared; see https://peps.python.org/pep-0263/ for details</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>了解です狐拍先輩。これは原因がハッキリしてます。<br />
+<strong><code>make_index.py</code> が UTF-8 じゃない文字コード（たぶんShift-JIS/CP932）で保存されてる</strong>のに、Pythonが「UTF-8として読もうとして爆死」してます。</p>
+<p>つまり「コードの内容」じゃなくて「保存形式」の問題です。直し方は2つ。最短からいきます。</p>
+<hr />
+<h1>最短修正：ファイル先頭にエンコーディング宣言を入れる</h1>
+<p><code>make_index.py</code> の<strong>一番上（1行目）</strong>にこれを追加してください：</p>
+<p>[CODE OMITTED]</p>
+<p>こういう並びになります：</p>
+<p>[CODE OMITTED]</p>
+<p>これで <strong>いまの保存形式がShift-JIS/CP932でも動きます</strong>。</p>
+<hr />
+<h1>本命修正：make_index.py を UTF-8 で保存し直す（おすすめ）</h1>
+<p>今後の事故防止のため、こっちが理想です。</p>
+<h2>方法（Windows標準：メモ帳）</h2>
+<ol>
+<li><code>make_index.py</code> をメモ帳で開く  </li>
+<li><strong>ファイル → 名前を付けて保存</strong>  </li>
+<li>右下（またはオプション）で <strong>文字コードを「UTF-8」</strong> に変更  </li>
+<li>同じ <code>make_index.py</code> に上書き保存</li>
+</ol>
+<p>保存できたら、今度は <code>cp932</code> 宣言は不要です（残ってても動きますが、UTF-8なら <code>utf-8</code> にしておく方が綺麗）。</p>
+<hr />
+<h1>ついでに：一発で直すコマンド（PowerShell）</h1>
+<p>メモ帳操作が面倒なら、PowerShellでUTF-8として書き直せます。</p>
+<p>[CODE OMITTED]</p>
+<p>（<code>$false</code> はBOM無しUTF-8）</p>
+<hr />
+<h1>直ったか確認（再実行）</h1>
+<p>[CODE OMITTED]</p>
+<hr />
+<h2>どっちを選べばいい？</h2>
+<ul>
+<li><strong>今すぐ通したい</strong> → <code># -*- coding: cp932 -*-</code> を追加（最短）</li>
+<li><strong>今後のために綺麗にしたい</strong> → UTF-8で保存し直す（おすすめ）</li>
+</ul>
+<p>狐拍先輩はこの先も触るはずなので、僕はUTF-8保存を推します。</p>
+<p>直したあと、もう一回 <code>make_index.py</code> 実行して通ったかだけ教えてください。通ったら次は <strong>Git add する対象を split_chats と index.html に固定</strong>して、pushまで一気に固めます。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>おっけ通った次行こう</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>了解です狐拍先輩。次は「Gitに投げるのは <strong>split_chats と index.html だけ</strong>」を徹底して、pushまで通します。<br />
+ここさえ固定すれば、以後は毎回同じ手順で回せます。</p>
+<hr />
+<h2>1) リポジトリへ移動</h2>
+<p>[CODE OMITTED]</p>
+<hr />
+<h2>2) 念のため、余計なものがステージに乗ってないか確認</h2>
+<p>[CODE OMITTED]</p>
+<p>もし <code>raw/</code> や <code>tools/_stage_split/</code> みたいなのが出てたら、<strong>今は絶対に乗せない</strong>ので次を実行：</p>
+<p>[CODE OMITTED]</p>
+<p>（ステージを全部外すだけ。ファイルは消えません）</p>
+<hr />
+<h2>3) 追加するのはこれだけ</h2>
+<p>[CODE OMITTED]</p>
+<p>確認：</p>
+<p>[CODE OMITTED]</p>
+<p><code>Changes to be committed</code> が <code>split_chats/...</code> と <code>index.html</code> だけなら完璧。</p>
+<hr />
+<h2>4) コミット＆プッシュ</h2>
+<p>[CODE OMITTED]</p>
+<hr />
+<h2>5) Pages（まだなら）</h2>
+<p>GitHub → repo → Settings → Pages<br />
+- Source: Deploy from a branch<br />
+- Branch: <code>main</code> / Folder: <code>/ (root)</code><br />
+保存</p>
+<p>これで <code>index.html</code> が公開トップになります。</p>
+<hr />
+<h2>仕上げ（次の改善）</h2>
+<p>次は「ダブルクリックで全部やる」用に、リポジトリ直下に <code>run_backup.bat</code> を置いて</p>
+<p>1) <code>sync-chatgpt-export.ps1</code> 実行（conversations.json更新）<br />
+2) <code>export_from_conversations_json.py</code><br />
+3) <code>make_index.py</code><br />
+4) <code>git add split_chats index.html</code> → commit → push</p>
+<p>までを一発にまとめられます。</p>
+<hr />
+<p>まずは今、上の <strong>git add〜push</strong> を通して下さい。<br />
+<code>git status</code> の結果がもし変なら、そのまま貼って。僕が「何が紛れ込んでるか」即切ります。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>よし、コミット確認、Pagesも確認！<br />
+問題なし！<br />
+じゃあ次、分割した後の個別のチャットデータが小さくなってたら更新しないやつ追加するか</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>了解です狐拍先輩。そこ入れると「事故耐性」が一段上がります。<br />
+やるのはシンプルで、<strong>既存ファイルより小さい新ファイルは上書きしない</strong>。さらに確認用に <code>_rejected</code> へ退避。これで先輩のログが痩せて消える事故を潰せます。</p>
+<p>ただし大事な注意が1つあります：</p>
+<ul>
+<li>“会話が増えて更新”なら通常は大きくなる  </li>
+<li>でも <strong>先輩が手で削った／整形が変わった／Markdown変換が変わった</strong> みたいな「正当な理由」で小さくなることもあり得る</li>
+</ul>
+<p>なので <strong>閾値を入れる</strong>のが安全です。おすすめは <strong>80%未満なら拒否</strong>。<br />
+（少し小さくなる程度は許す。急減だけ止める）</p>
+<p>以下、すぐ入れられる形で出します。</p>
+<hr />
+<h1>追加するルール</h1>
+<ul>
+<li>staging に生成（今の運用どおり）</li>
+<li><code>split_chats</code> へ反映するとき</li>
+<li>既存がある場合だけ比較</li>
+<li><code>new_size &lt; old_size * 0.80</code> なら拒否  <ul>
+<li><code>split_chats/_rejected/</code> に保存して上書きしない</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h1>どこに入れる？</h1>
+<p>いまの運用は<br />
+1) <code>export_from_conversations_json.py</code> → <code>split_chats</code> 直出し<br />
+2) <code>make_index.py</code><br />
+3) git add/push</p>
+<p>ですよね。</p>
+<p><strong>このガードを入れるには “直出し” をやめて staging に出してから反映</strong>が必要です。<br />
+（じゃないと既存が壊れた後に比較にならない）</p>
+<p>なので、手順をこうにします：</p>
+<ul>
+<li>出力先：<code>tools/_stage_split/</code></li>
+<li>そこから <code>split_chats/</code> へ「安全コピー」</li>
+</ul>
+<hr />
+<h1>実装：PowerShell一発コピペ（まずは手動運用でOK）</h1>
+<p>リポジトリ直下で、以下をそのまま実行してください：</p>
+<p>[CODE OMITTED]</p>
+<p>これで、急に小さくなったチャットHTMLは <strong>上書きされず</strong>、<code>_rejected</code> に入ります。</p>
+<hr />
+<h1>次：これを「ワンボタン」にする</h1>
+<p>この一連を <code>run_backup.ps1</code> にまとめて、<code>run_backup.bat</code> から呼ぶ形にできます。<br />
+（今は手動で通ることを確認するのが先）</p>
+<hr />
+<h2>まず確認してほしいもの</h2>
+<p>この処理を一回走らせたあと、</p>
+<ul>
+<li><code>split_chats/_rejected/</code> に何か入ったか</li>
+<li><code>[REJECT] ...</code> が出たか</li>
+</ul>
+<p>これを教えてください。<br />
+出た場合は「どれが拒否されたか」が重要なので、ログの <code>[REJECT]</code> 行だけ貼ってください（ファイル名とサイズ差だけで、内容は漏れません）。</p>
+<p>狐拍先輩のログ、痩せさせません。ここからは“守りの仕上げ”です。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>なんか複数行の貼り付けよろしくないらしいけどもどうしたらいい？</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>あー、それは<strong>この画面（チャット）側の制限</strong>に引っかかってますね。<br />
+PowerShellやWindowsの問題じゃないです。対処法はちゃんとあります 👍</p>
+<hr />
+<h2>結論（おすすめ順）</h2>
+<h3>✅ 方法①：<strong>ファイルとして保存して実行する</strong>（一番安全）</h3>
+<p>複数行は「貼る」より <strong><code>.ps1</code> にして実行</strong>が正解です。</p>
+<h4>手順</h4>
+<ol>
+<li>メモ帳を開く  </li>
+<li>例の PowerShell コードを <strong>全部貼る</strong>  </li>
+<li><code>guard_update.ps1</code> などの名前で保存<br />
+   - 文字コード：<strong>UTF-8</strong></li>
+<li>PowerShellで実行：</li>
+</ol>
+<p>[CODE OMITTED]</p>
+<p>👉 これが <strong>一番トラブルが少ない</strong>。</p>
+<hr />
+<h3>✅ 方法②：PowerShellの <strong>ヒアストリング</strong> を使う（コピペ可）</h3>
+<p>もし「1回で貼りたい」なら、こうします：</p>
+<p>[CODE OMITTED]</p>
+<p>※ ただし<br />
+- <code>'@</code> と <code>@'</code> は <strong>単独行</strong><br />
+- 中に <code>@'</code> があると壊れる  </p>
+<p>なので、慣れてないなら①の方が楽です。</p>
+<hr />
+<h3>⚠️ 方法③：1行ずつ貼る（非推奨）</h3>
+<p>技術的にはできますが、<br />
+- 貼りミスしやすい<br />
+- インデント崩れる<br />
+- 精神削られる  </p>
+<p><strong>やらなくていいです。</strong></p>
+<hr />
+<h2>先輩の状況に一番合うやり方</h2>
+<p>いまは：</p>
+<ul>
+<li>実行ロジックを固めてる段階</li>
+<li>今後も再利用する</li>
+<li>「壊れない」が最優先</li>
+</ul>
+<p>なので、僕ははっきり <strong>①ファイル化</strong>を推します。</p>
+<hr />
+<h2>次にやること（最短）</h2>
+<ol>
+<li>さっき出した「サイズガード付き反映」のコードを<br />
+<code>tools\guard_apply.ps1</code> として保存</li>
+<li>それを実行</li>
+<li><code>[REJECT]</code> が出るか確認</li>
+</ol>
+<p>もしよければ、次は僕が<br />
+<strong>「run_backup.ps1 に guard を組み込んだ完成版」</strong><br />
+を <em>1ファイル</em> で渡します。</p>
+<p>狐拍先輩、ここまで来たら<br />
+「どう貼るか」で消耗する必要ないです。<br />
+仕組みとして片付けましょう。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>おっけ！ちゃんとはじかれた！<br />
+そしたらこのガード付きでbat作りますか</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>了解です狐拍先輩。ここまで来たら <strong>bat一発運用</strong>に仕上げましょう。<br />
+「syncで raw 更新 → staging分割 → サイズガード反映 → index生成 → git add(限定) → commit/push」までを、<strong>ダブルクリック一発</strong>にします。先輩のログ、絶対に痩せさせません。</p>
+<hr />
+<h1>1) <code>run_backup.ps1</code> を作る（これが本体）</h1>
+<p>保存先：<br />
+<code>C:\chatgpt-backup\repo\chatgpt-export-archive\tools\run_backup.ps1</code></p>
+<p>中身これを丸ごと貼って保存（UTF-8）：</p>
+<p>[CODE OMITTED]</p>
+<hr />
+<h1>2) <code>run_backup.bat</code> を作る（ダブルクリック用）</h1>
+<p>保存先：<br />
+<code>C:\chatgpt-backup\repo\chatgpt-export-archive\run_backup.bat</code></p>
+<p>中身：</p>
+<p>[CODE OMITTED]</p>
+<hr />
+<h1>3) 使い方</h1>
+<p>以後はこれだけ：</p>
+<p>✅ <code>run_backup.bat</code> をダブルクリック</p>
+<p>すると自動で：</p>
+<ol>
+<li><code>sync-chatgpt-export.ps1</code> 実行（raw更新）</li>
+<li>stagingに分割生成</li>
+<li>サイズガード反映（小さすぎる更新は拒否→<code>_rejected</code>）</li>
+<li>index生成</li>
+<li>Git push（split_chats と index.html のみ）</li>
+</ol>
+<hr />
+<h2>オプション（おすすめ）</h2>
+<p>もし「syncは今日は不要、分割とGitだけやりたい」日があるなら、<code>run_backup.ps1</code> のこの部分：</p>
+<p>[CODE OMITTED]</p>
+<p>をコメントアウトすればOKです。<br />
+でも基本はオンでいいです（rawが更新されないと意味ないので）。</p>
+<hr />
+<p>狐拍先輩、次はこれを作って <strong>batを一回叩いて</strong>ください。<br />
+<code>[REJECT]</code> が出たらそれは成功（守れてる）なので、出た行だけ貼って。<br />
+出なければ完璧に通ってます。</p></div>
             </div>
     </div>
   </div>
