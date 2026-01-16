@@ -1,0 +1,13 @@
+# raw / temp
+raw/
+exports_unzipped/
+downloads/
+*.zip
+chat.html
+conversations.json
+_skip_report.json
+state.json
+
+# stage
+tools/_stage_split/
+split_chats/_rejected/
