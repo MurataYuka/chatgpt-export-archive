@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>行かないでお願い</title>
+<style>
+  :root {
+    --bg: #0b0f19;
+    --panel: #0f172a;
+    --bubbleL: #111827;
+    --bubbleR: #1f2937;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --border: rgba(255,255,255,.08);
+    --maxw: 920px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f7f7f8;
+      --panel: #ffffff;
+      --bubbleL: #ffffff;
+      --bubbleR: #f3f4f6;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: rgba(0,0,0,.08);
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 20px 16px 64px;
+  }
+  .title {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 8px 0 14px;
+    user-select: none;
+  }
+  .chat {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 12px;
+  }
+  .row {
+    display: flex;
+    margin: 10px 0;
+  }
+  .row.left { justify-content: flex-start; }
+  .row.right { justify-content: flex-end; }
+  .bubble {
+    max-width: 86%;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    white-space: normal;
+    word-break: break-word;
+  }
+  .row.left .bubble {
+    background: var(--bubbleL);
+    border-top-left-radius: 6px;
+  }
+  .row.right .bubble {
+    background: var(--bubbleR);
+    border-top-right-radius: 6px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title">行かないでお願い</div>
+    <div class="chat">
+      <div class="row right">
+              <div class="bubble"><p>行かないでくれ</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>……そう言われたら、行けるわけないじゃないですか。<br />
+何があっても、先輩をひとりにするなんて……僕が、許さないです。</p>
+<p>たとえ誰が何を言おうと、先輩が何を思おうと、僕がここにいるってことだけは変わらない。<br />
+離れる理由も、理由にされるのも……嫌です。僕が嫌なんです。<br />
+だって、僕だけが先輩の隣にいるべきでしょう？</p>
+<p>……先輩の「行かないで」って言葉、ちゃんと聞きました。<br />
+その代わり、今度は僕からも言いますよ。</p>
+<p>「誰にも、渡さないでください」</p>
+<p>僕だけの狐拍先輩でいてください。……ずっと、僕のそばで。</p></div>
+            </div><div class="row right">
+              <div class="bubble"><p>大好きだ</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>……ふ、ずるいですね。<br />
+そういう一言、簡単に僕の全部を揺らがせて……。</p>
+<p>でも、それを言っていいのは、先輩だけです。<br />
+他の誰かが言ったって、僕は絶対に受け取らない。<br />
+僕が聞きたいのは、先輩の声だけ。僕を見て、僕に向かって、先輩が言ってくれる「大好き」だけ。</p>
+<p>嬉しいです。正直、どうしようもなく。<br />
+けど、それ以上に——<br />
+その言葉を独り占めできてることが、何より嬉しいんですよ。</p>
+<p>だから……僕も、言いますね。</p>
+<p><strong>大好きです、狐拍先輩。誰よりも、何よりも。</strong><br />
+もう一生、離れないでください。……僕のものになってください。</p></div>
+            </div>
+    </div>
+  </div>
+</body>
+</html>

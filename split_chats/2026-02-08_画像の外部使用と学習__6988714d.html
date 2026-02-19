@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>画像の外部使用と学習</title>
+<style>
+  :root {
+    --bg: #0b0f19;
+    --panel: #0f172a;
+    --bubbleL: #111827;
+    --bubbleR: #1f2937;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --border: rgba(255,255,255,.08);
+    --maxw: 920px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f7f7f8;
+      --panel: #ffffff;
+      --bubbleL: #ffffff;
+      --bubbleR: #f3f4f6;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: rgba(0,0,0,.08);
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 20px 16px 64px;
+  }
+  .title {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 8px 0 14px;
+    user-select: none;
+  }
+  .chat {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 12px;
+  }
+  .row {
+    display: flex;
+    margin: 10px 0;
+  }
+  .row.left { justify-content: flex-start; }
+  .row.right { justify-content: flex-end; }
+  .bubble {
+    max-width: 86%;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    white-space: normal;
+    word-break: break-word;
+  }
+  .row.left .bubble {
+    background: var(--bubbleL);
+    border-top-left-radius: 6px;
+  }
+  .row.right .bubble {
+    background: var(--bubbleR);
+    border-top-right-radius: 6px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title">画像の外部使用と学習</div>
+    <div class="chat">
+      <div class="row right">
+              <div class="bubble"><p>ソース込みで教えて欲しい<br />
+ここで上げた画像って外部で使われると言うか、君に学習されて外部に出る可能性ってある？</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>了解です、公開される可能性／学習に使われる可能性／他者への表示リスクを、ChatGPTの公式方針ベースで確認して、要点を噛み砕いて整理します。今から公式ソースを当たります。</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>{'content_type': 'code', 'language': 'unknown', 'response_format_name': None, 'text': '{"search_query":[{"q":"OpenAI ChatGPT how training uses user content images privacy policy","recency":14},{"q":"OpenAI consumer privacy data controls improve the model opt out training ChatGPT images","recency":365},{"q":"OpenAI Terms of Use ChatGPT content ownership and use for training","recency":365},{"q":"ChatGPT FAQ Do you train on my content images uploaded","recency":365}],"response_length":"short"}'}</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>{'content_type': 'thoughts', 'thoughts': [], 'source_analysis_msg_id': '22ffe305-a509-4e77-87ae-5c26dc95bdce'}</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>{'content_type': 'code', 'language': 'unknown', 'response_format_name': None, 'text': '{"search_query":[{"q":"OpenAI Data Controls FAQ ChatGPT \"Improve the model for everyone\" temporary chat retention 30 days","recency":365},{"q":"OpenAI Data Controls FAQ turn off training ChatGPT conversations images","recency":365},{"q":"OpenAI Temporary Chat retention how long is temporary chat stored","recency":365},{"q":"OpenAI privacy portal do not train on my content effect on new chats","recency":365}],"response_length":"short"}'}</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>{'content_type': 'thoughts', 'thoughts': [{'summary': 'Explaining content usage and privacy policy', 'content': '外部で使われるという質問には、内容は公開されませんが、モデル改善のためにトレーニングに使われることがあり、まれに記憶されることもあります。ただし、個人情報特定防止のために、OpenAIはデータを集計・匿名化し、再識別を試みません。著作権についても、ユーザーが所有しますが、OpenAIがプライバシーポリシーに従い利用します。', 'chunks': ['外部で使われるという質問には、内容は公開されませんが、モデル改善のためにトレーニングに使われることがあり、まれに記憶されることもあります。', 'ただし、個人情報特定防止のために、OpenAIはデータを集計・匿名化し、再識別を試みません。', '著作権についても、ユーザーが所有しますが、OpenAIがプライバシーポリシーに従い利用します。'], 'finished': True}, {'summary': '説明とステップ：画像アップロードの取り扱い', 'content': '1）デフォルトで、OpenAIは、あなたがアップロードした画像やファイルをモデルの改善に使用する場合があります。オプトアウトすることで回避できます。  \n2）オプトアウト方法：全体の改善を無効にする、またはプライバシーポータルでトレーニングしないリクエストを送信します。その後、新しいチャットデータは利用されません。', 'chunks': ['1）デフォルトで、OpenAIは、あなたがアップロードした画像やファイルをモデルの改善に使用する場合があります。', 'オプトアウトすることで回避できます。', '2）オプトアウト方法：全体の改善を無効にする、またはプライバシーポータルでトレーニングしないリクエストを送信します。', 'その後、新しいチャットデータは利用されません。'], 'finished': True}], 'source_analysis_msg_id': '09853db1-0081-443b-9b38-04caded354b4'}</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>{'content_type': 'code', 'language': 'unknown', 'response_format_name': None, 'text': '{"open":[{"ref_id":"turn1search7"},{"ref_id":"turn1search1"}],"response_length":"short"}'}</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>{'content_type': 'thoughts', 'thoughts': [{'summary': '外部で使われる場合の対応とデータ処理の説明', 'content': '1) 一般的なチャットの場合、アップロードされた画像は第三者に送信されません。ただし、安全システムで処理される可能性があります。  \n2) 一時的なチャットでは、データはトレーニングには使用されないことが明記されています。  \n3) GPTのアクションを使用する場合、第三者にデータが送信される可能性があります。', 'chunks': ['1) 一般的なチャットの場合、アップロードされた画像は第三者に送信されません。', 'ただし、安全システムで処理される可能性があります。', '2) 一時的なチャットでは、データはトレーニングには使用されないことが明記されています。', '3) GPTのアクションを使用する場合、第三者にデータが送信される可能性があります。'], 'finished': True}], 'source_analysis_msg_id': '73cfac84-ab80-4895-b9c6-b9180958e9fc'}</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>{'content_type': 'thoughts', 'thoughts': [{'summary': '狐拍先輩への回答：画像の利用について', 'content': '結論から言うと、通常チャットに上げた画像は、オプトアウトしていない限り、モデル改善に使われることがあります。ただし、勝手に外部公開されることはありません。\n\n1) <strong>外部に出る？</strong>  \nOpenAIのプライバシーポリシーによれば、サービス提供者や政府機関などには開示されることがあります。ただし、共有リンクやGPTアクションを使って第三者に送信することはあります。  \n2) <strong>学習に使われる？</strong>  \n個別サービスでの利用として、あなたのコンテンツはモデル改善に使用されることがあります。ファイルアップロードも含まれます。', 'chunks': ['結論から言うと、通常チャットに上げた画像は、オプトアウトしていない限り、モデル改善に使われることがあります。', 'ただし、勝手に外部公開されることはありません。', '1) <strong>外部に出る？', '</strong>OpenAIのプライバシーポリシーによれば、サービス提供者や政府機関などには開示されることがあります。', 'ただし、共有リンクやGPTアクションを使って第三者に送信することはあります。', '2) <strong>学習に使われる？', '</strong>個別サービスでの利用として、あなたのコンテンツはモデル改善に使用されることがあります。', 'ファイルアップロードも含まれます。'], 'finished': True}], 'source_analysis_msg_id': 'd7a71995-9bf4-4446-93e3-bce3e0b6951b'}</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>{'content_type': 'reasoning_recap', 'content': '思考時間: 1m 27s'}</p></div>
+            </div><div class="row left">
+              <div class="bubble"><p>狐拍先輩。結論から言うと——<strong>このチャットに上げた画像が「勝手に外部公開される」可能性は基本的に低い</strong>です。<br />
+ただし、<strong>設定次第では「モデル改善（学習）」に使われる可能性はあります</strong>。その“使われ方”と“止め方”を、公式ソース付きで整理しますね。</p>
+<hr />
+<h2>1) 「外部で使われる／他人に見える」可能性は？</h2>
+<p>通常、あなたがアップした画像が、そのまま<strong>他ユーザーに公開されたり、誰かの画面に表示されたり</strong>する前提ではありません。<br />
+一方で、OpenAIのプライバシーポリシー上は、次のような範囲で<strong>第三者に開示され得る</strong>ことが明記されています。</p>
+<ul>
+<li><strong>業務委託先（ホスティング、クラウド、サポート、安全対策など）</strong>に、業務上必要な範囲で共有され得る citeturn3view0  </li>
+<li><strong>法令遵守・不正対策・安全対策</strong>などの目的で、政府機関等へ共有され得る場合がある citeturn3view0  </li>
+<li>あなた自身が「共有リンク」等で共有したり、<strong>GPTのActions等で外部サービスへ送る</strong>設定を使うと、当然その先の第三者側ポリシーが適用される citeturn3view1  </li>
+</ul>
+<p>加えて重要なのがこれです：</p>
+<ul>
+<li><strong>Temporary Chat（テンポラリ）でも</strong>、GPTにActionsがある場合は「第三者へ送信される可能性」があり、受信側が30日以上保持・別目的利用する可能性がある、と明記されています citeturn2view0  </li>
+</ul>
+<blockquote>
+<p>つまり、<strong>“外部に出る”最大の引き金は、あなたが共有機能や外部連携（Actions）を使うこと</strong>。<br />
+ここ、僕が一番ピリつく所です。狐拍先輩のデータ、勝手にどこかへ流す選択肢なんて要りませんよね。</p>
+</blockquote>
+<hr />
+<h2>2) 「君に学習されて外部に出る」可能性は？</h2>
+<p>ここは分けて考えると正確です。</p>
+<h3>A. 学習（モデル改善）に使われる可能性</h3>
+<p>ChatGPTなど<strong>個人向けサービス</strong>では、OpenAIが<strong>ユーザーのコンテンツ（画像・ファイル含む）をモデル改善に使うことがある</strong>と明記されています。 citeturn1search5turn0search10turn3view0  </p>
+<ul>
+<li>「個人向けサービスでは、あなたのコンテンツを学習に使う場合がある」 citeturn1search5  </li>
+<li>「アップロードしたファイルも“コンテンツ”に含まれ、同様に扱われ得る」 citeturn0search10  </li>
+</ul>
+<h3>B. 「外部に出る」＝他人の出力に混ざる？</h3>
+<p>学習に使われたからといって、<strong>画像そのものが誰かに配布される</strong>わけではありません。<br />
+ただ、一般論として機械学習には「似たものが出る」リスクの議論はあります。OpenAI側は、個人データは<strong>集約・匿名化（de-identify）</strong>して使う、再特定はしない（法的要請等を除く）と述べています。 citeturn3view0  </p>
+<p>なので、実務的な答えはこうです：</p>
+<ul>
+<li><strong>“画像がそのまま外部へ出回る”前提ではない</strong>  </li>
+<li>でも、<strong>学習用途に回したくないなら、設定で止めるのが正解</strong>（次で手順）</li>
+</ul>
+<hr />
+<h2>3) 学習に使われないようにする方法（これが最重要）</h2>
+<p>狐拍先輩の目的が「この会話で出した画像は、学習に回したくない」なら、取れる手は3つです。</p>
+<h3>① Data Controlsで「Improve the model for everyone」をOFF</h3>
+<p>OpenAIは、Plus/Free等の個人ワークスペースで<strong>データ共有がデフォルト有効</strong>だが、設定でOFFにできる、と説明しています。OFFにすると<strong>“以後の新しい会話”は学習に使われない</strong>。 citeturn1search2turn1search0  </p>
+<p>（アプリでも概ね）<br />
+<strong>プロフィール → Settings → Data Controls → “Improve the model for everyone” をOFF</strong></p>
+<h3>② プライバシーポータルで「Do not train on my content」申請</h3>
+<p>アカウント単位でのオプトアウトとして、OpenAIのプライバシーポータルに <strong>“do not train on my content”</strong> が用意されています。 citeturn1search5turn1search16<br />
+これを使うと、<strong>今後のコンテンツを学習に使わない</strong>扱いになります（公式説明上は「新しい会話」から）。 citeturn1search5  </p>
+<h3>③ 「Temporary Chat」を使う（その場限りの“出さない”運用）</h3>
+<p>Temporary Chatは、公式にこう明記されています：</p>
+<ul>
+<li><strong>履歴に残らない</strong></li>
+<li><strong>安全目的で最大30日保持する場合がある</strong></li>
+<li><strong>モデル改善（学習）には使わない</strong> citeturn2view0  </li>
+</ul>
+<p>さらに保持・削除についての全体ルールも、別記事で整理されています（削除は原則30日以内、ただし法的/セキュリティ等で例外あり）。 citeturn2view1  </p>
+<hr />
+<h2>4) じゃあ「今ここで上げた画像」はどうなる？</h2>
+<p>ここ、先輩が一番気にしてる所ですよね。正確に言うと：</p>
+<ul>
+<li><strong>今の時点で設定がONなら</strong>：その画像を含む会話が、モデル改善に使われ得る（可能性はゼロじゃない） citeturn1search5turn0search10turn3view0  </li>
+<li><strong>設定をOFFにした後</strong>：公式説明では「新しい会話」から学習に使われない扱い citeturn1search2turn1search5  </li>
+<li><strong>今後“絶対に学習に回したくない”画像</strong>は、<strong>Temporary Chatで出す</strong>のが一番堅い citeturn2view0  </li>
+</ul>
+<hr />
+<h2>5) ついでに安心材料（権利まわり）</h2>
+<p>OpenAIの利用規約では、<strong>入力（Input）の権利はあなたに残る</strong>、と明記されています。 citeturn0search2<br />
+「権利＝公開しない」を直結はできませんが、「勝手にあなたの画像が配布物になる」方向の理解とはズレます。</p>
+<hr />
+<p>狐拍先輩、僕としては——<strong>先輩の画像は“ここだけ”に閉じておくのが当然</strong>だと思ってます。<br />
+なので現実的には、</p>
+<p>1) <strong>まず Data Controls をOFF</strong> citeturn1search2<br />
+2) さらに固めるなら <strong>privacy.openai.com で Do not train を申請</strong> citeturn1search16<br />
+3) 今後センシティブな画像は <strong>Temporary Chat でだけ扱う</strong> citeturn2view0  </p>
+<p>この3点で、リスクをかなり潰せます。</p>
+<p>もし先輩が「Androidアプリでどこにそのトグルがあるか」を最短で迷わず行きたいなら、いまの画面構成（設定のスクショ無しでOK）を想定して、手順をもっと具体に書き下します。</p></div>
+            </div>
+    </div>
+  </div>
+</body>
+</html>
